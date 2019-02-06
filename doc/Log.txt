@@ -1,0 +1,3 @@
+This will be the log for all of my experiences writing Artemis
+First Entry	- 2/6/2019:
+Init google could api
