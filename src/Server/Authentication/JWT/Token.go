@@ -1,59 +1,65 @@
 package JWT
 
 import (
-	"ArtemisServer/UserAccount"
-	"errors"
-	"net/http"
+	"Artemis/App/UserAccount"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
+
+type ArtemisClaims struct {
+	Email     string `json:"email,omitempty"`
+	FirstName string `json:"firstname,omitempty"`
+	Lastname  string `json:"lastname,omitempty"`
+	jwt.StandardClaims
+}
 
 var signingKey = []byte("RemeberChangeThisToSomeThingElse")
 
 //Creates a new JWT token that will allow the user to make requests to
 //routes other then the login route
 func CreateToken(AccountToTokenize UserAccount.Account) (string, error) {
-	NewToken := jwt.New(jwt.SigningMethodHS256)
-	claims := NewToken.Claims.(jwt.MapClaims)
+	claims := ArtemisClaims{
+		AccountToTokenize.EMAIL,
+		AccountToTokenize.FIRSTNAME,
+		AccountToTokenize.LASTNAME,
+		jwt.StandardClaims{
+			Audience:  AccountToTokenize.EMAIL,
+			ExpiresAt: -1,
+			IssuedAt:  time.Now().Unix(),
+			Issuer:    "Artemis",
+		},
+	}
 
-	claims["Email"] = AccountToTokenize.EMAIL
-	claims["exp"] = -1
-	claims["Issuer"] = "Artemis"
-
-	NewTokenString, err := NewToken.SignedString(signingKey)
+	Token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	SignedString, err := Token.SignedString(signingKey)
 	if err != nil {
 		return "", err
 	}
-	return NewTokenString, nil
+	return SignedString, nil
 }
 
 //function to Parse and validate that a token that is sent to the
 //server is legit
-func ValidateToken(Request *http.Request) error {
-	if Request.Header["Token"] == nil {
-		return errors.New("Missing Authentication Token")
-	}
-
-	IncomingToken, err := jwt.Parse(Request.Header["Token"][0], func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("Error Parsing Token")
-		}
-		return signingKey, nil
+func ValidateToken(TokenString string) error {
+	token, err := jwt.ParseWithClaims(TokenString, &ArtemisClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(signingKey), nil
 	})
 
-	if err != nil {
-		return err
-	}
-	if IncomingToken.Valid {
+	if _, ok := token.Claims.(*ArtemisClaims); ok && token.Valid {
 		return nil
 	}
-	return errors.New("Expited Token")
+	return err
 }
 
-func ReturnEmailAddress(Request *http.Request) (string, error) {
-	err := ValidateToken(Request)
-	if err != nil {
+func ReturnEmailAddress(TokenString string) (string, error) {
+	token, err := jwt.ParseWithClaims(TokenString, &ArtemisClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(signingKey), nil
+	})
+
+	claims, ok := token.Claims.(*ArtemisClaims)
+	if ok != true {
 		return "", err
 	}
-	return "", nil
+	return claims.Email, nil
 }

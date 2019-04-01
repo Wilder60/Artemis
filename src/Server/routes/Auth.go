@@ -1,11 +1,14 @@
 package Routes
 
 import (
-	"ArtemisServer/Authentication/JWT"
-	"ArtemisServer/UserAccount"
+	"Artemis/App/KeyHook"
+	"Artemis/App/UserAccount"
+	"Artemis/Authentication/JWT"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -29,7 +32,6 @@ func SetAuthRoutes(router *mux.Router) *mux.Router {
 	return router
 }
 
-//TODO ADD JWT Authenitcation
 //-----------------------------For Login Route-------------------------------//
 func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
@@ -61,8 +63,7 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 		Writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	Writer.Header().Set("Token", JWTToken)
+	Writer.Header().Set("MasterToken", JWTToken)
 	Writer.WriteHeader(http.StatusAccepted)
 	return
 }
@@ -70,36 +71,45 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 //--------------------------FOR THE SIGNUP ROUTE-----------------------------//
 func createUser(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-
 	NewAccount := UserAccount.EmptyAccount()
 	err := json.NewDecoder(Request.Body).Decode(&NewAccount)
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	AccConnection := DBClient.Database("db").Collection("Accounts")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-
 	count, err := AccConnection.Count(ctx, bson.M{"email": NewAccount.EMAIL})
 	if err != nil {
-		panic(err)
-	}
-
-	if count != 0 {
-		Writer.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
+	if count != 0 {
+		Writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	HASHPASS, err := bcrypt.GenerateFromPassword([]byte(NewAccount.PASSWORD), bcrypt.DefaultCost)
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
-
 	NewAccount.PASSWORD = string(HASHPASS)
 	_, Inserterr := AccConnection.InsertOne(ctx, NewAccount)
 	if Inserterr != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	err = KeyHook.CreateNewAccount(NewAccount.EMAIL)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	Writer.WriteHeader(http.StatusAccepted)
 	return
@@ -107,9 +117,11 @@ func createUser(Writer http.ResponseWriter, Request *http.Request) {
 
 func updateUser(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	err := JWT.ValidateToken(Request)
+
+	err := JWT.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
-		Writer.WriteHeader(http.StatusNotFound)
+		Writer.WriteHeader(http.StatusUnauthorized)
+		Writer.Write([]byte("Invalid Token"))
 		return
 	}
 
@@ -117,11 +129,15 @@ func updateUser(Writer http.ResponseWriter, Request *http.Request) {
 
 func deleteUser(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-
 	err := JWT.ValidateToken(Request)
 	if err != nil {
-		Writer.WriteHeader(http.StatusNotFound)
+		Writer.WriteHeader(http.StatusUnauthorized)
+		Writer.Write([]byte("Invalid Token"))
 		return
 	}
-
+	Request.ParseForm()
+	fmt.Println(Request.FormValue("email"))
+	Writer.WriteHeader(http.StatusOK)
+	return
+	//KeyHook.DeleteKeyHookAccount(Request.FormValue("email"))
 }

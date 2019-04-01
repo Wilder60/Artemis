@@ -1,0 +1,27 @@
+POST http://127.0.0.1:3000/Auth HTTP/1.1
+content-type: application/json
+
+{
+    "email": "meme@test.edu",
+    "password": "Quack123!"
+}
+
+###
+PUT http://127.0.0.1:3000/Auth HTTP/1.1
+content-type: application/json
+
+{
+    "email": "meme@test.edu",
+    "password": "Quack123!",
+    "firstname": "John",
+    "lastname": "Smith"
+}
+
+###
+DELETE http://127.0.0.1:3000/Auth HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6Im1lbWVAdGVzdC5lZHUiLCJJc3N1ZXIiOiJBcnRlbWlzIiwiZXhwIjotMX0.OoUwBs3j8YKLjIJoPEm-8cVKmtGe_-kz8N7UQhwdfgo
+Content-Type: application/json
+
+{
+    "email": "meme@test.edu"
+}
