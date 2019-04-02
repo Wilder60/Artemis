@@ -1,4 +1,4 @@
-package Routes
+package routes
 
 import (
 	"net/http"
@@ -13,7 +13,7 @@ import (
 	5. else get an error message
 	6. convert the error message to audio and return that to the client
 */
-func ParseRequest(a_Writer http.ResponseWriter, a_Request *http.Request) {
-	defer a_Request.Body.Close()
+func ParseRequest(Writer http.ResponseWriter, Request *http.Request) {
+	defer Request.Body.Close()
 
 }

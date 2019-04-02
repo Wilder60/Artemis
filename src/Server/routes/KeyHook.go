@@ -1,20 +1,30 @@
-package Routes
+package routes
 
 import (
 	"Artemis/App/KeyHook"
-	"Artemis/Authentication/JWT"
+	"Artemis/Security/Authentication/JWT"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
 
+//TODO: Add Crypto to the keys
+
+type keyHookRequest struct {
+	Email        string   `form:"email"`
+	Website      string   `form:"website,omitempty"`
+	WebsiteArray []string `form:"websiteArray,omitempty"`
+}
+
 /*
+SetKeyHookRoutes Setting the functions for the KeyHook routes
 	POST	-> Add a key for a user
 	GET		-> Get all the keys for a single user
 	PATCH	-> Update one of the Keys (KeyName or KeyPass)
 	DELETE 	-> Remove a Key from a user list
-
 */
 func SetKeyHookRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/KeyHook", addKey).Methods("POST")
@@ -26,18 +36,24 @@ func SetKeyHookRoutes(router *mux.Router) *mux.Router {
 
 //Adds a key to the appropiate account
 func addKey(Writer http.ResponseWriter, Request *http.Request) {
-	Request.ParseForm()
 	defer Request.Body.Close()
-
-	err := JWT.ValidateToken(Request)
+	err := JWT.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
-		fmt.Println("POST\t\\Auth\t200")
+		fmt.Println("POST\t\\Auth\t" + string(http.StatusUnauthorized))
 		Writer.WriteHeader(http.StatusUnauthorized)
 		Writer.Write([]byte("Invalid Token"))
 		return
 	}
 
-	err = KeyHook.AddNewKey(Request.FormValue("Email"), Request.FormValue("Website"))
+	addRequest := keyHookRequest{}
+	err = json.NewDecoder(Request.Body).Decode(&addRequest)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = keyhook.AddNewKey(addRequest.Email, addRequest.Website)
 	if err != nil {
 		fmt.Printf("POST\t\\Auth\t500")
 		Writer.WriteHeader(http.StatusInternalServerError)
@@ -45,7 +61,7 @@ func addKey(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 
-	fmt.Printf("POST\t\\Auth\t204")
+	fmt.Printf("POST\t\\Auth\t202")
 	Writer.WriteHeader(http.StatusAccepted)
 	return
 
@@ -53,44 +69,75 @@ func addKey(Writer http.ResponseWriter, Request *http.Request) {
 
 func getKeys(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	Request.ParseForm()
-	err := JWT.ValidateToken(Request)
+	err := JWT.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
 		Writer.WriteHeader(http.StatusUnauthorized)
 		Writer.Write([]byte("Invalid Token"))
 		return
 	}
-	Keys := KeyHook.GetAllKeys(Request.FormValue("Email"))
+
+	GetRequest, err := parseHTTPRequest(Request)
+	if err != nil {
+		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte(err.Error()))
+	}
+
+	Keys := keyhook.GetAllkeys(GetRequest.Email)
+	//loop and decrypt the keys
 	Writer.WriteHeader(http.StatusOK)
 	Writer.Write(Keys)
-
+	return
 }
 
 func modifyKey(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	err := JWT.ValidateToken(Request)
+	err := JWT.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
 		Writer.WriteHeader(http.StatusUnauthorized)
 		Writer.Write([]byte("Invalid Token"))
 		return
 	}
-	Request.ParseForm()
-	err = KeyHook.ModifyExistingKey(Request.FormValue("Email"), Request.FormValue("Website"))
+
+	RequestLogin, err := parseHTTPRequest(Request)
+	if err != nil {
+		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte(err.Error()))
+		return
+	}
+
+	err = keyhook.ModifyExistingKey(RequestLogin.Email, RequestLogin.Website)
 	if err != nil {
 		Writer.WriteHeader(http.StatusNotFound)
+		return
 	}
 	Writer.WriteHeader(http.StatusAccepted)
 	return
 }
 
 func removeKey(Writer http.ResponseWriter, Request *http.Request) {
-	err := JWT.ValidateToken(Request)
+	err := JWT.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
 		Writer.WriteHeader(http.StatusUnauthorized)
 		Writer.Write([]byte("Invalid Token"))
 		return
 	}
 
+	removeRequest, err := parseHTTPRequest(Request)
+	if err != nil {
+		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte(err.Error()))
+		return
+	}
+	keyhook.RemoveKeys(removeRequest.Email, removeRequest.WebsiteArray)
 	Writer.WriteHeader(http.StatusAccepted)
 	return
+}
+
+func parseHTTPRequest(Request *http.Request) (keyHookRequest, error) {
+	NewRequest := keyHookRequest{}
+	err := json.NewDecoder(Request.Body).Decode(&NewRequest)
+	if err != nil {
+		return keyHookRequest{}, err
+	}
+	return NewRequest, nil
 }

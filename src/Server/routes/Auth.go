@@ -1,9 +1,9 @@
-package Routes
+package routes
 
 import (
-	"Artemis/App/KeyHook"
+	keyhook "Artemis/App/KeyHook"
 	"Artemis/App/UserAccount"
-	"Artemis/Authentication/JWT"
+	"Artemis/Security/Authentication/JWT"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -22,8 +22,10 @@ import (
 //UPDATE - To update an account with new user info
 //DELETE - To remove a user from the database (and cancel all there active alarms)
 
+//DBClient connection to the the mongo connect that will be connected in main
 var DBClient *mongo.Client
 
+//SetAuthRoutes Setting the Routes for the router
 func SetAuthRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/Auth", validateLogin).Methods("POST")
 	router.HandleFunc("/Auth", createUser).Methods("PUT")
@@ -40,7 +42,9 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 	LoginRequest := UserAccount.AccountLogin{}
 	err := json.NewDecoder(Request.Body).Decode(&LoginRequest)
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -49,7 +53,9 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 	DBAccount := UserAccount.EmptyAccount()
 	SearchErr := AccountsCollection.FindOne(ctx, bson.M{"email": LoginRequest.EMAIL}).Decode(&DBAccount)
 	if SearchErr != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	ValidHash := bcrypt.CompareHashAndPassword([]byte(DBAccount.PASSWORD), []byte(LoginRequest.PASSWORD))
@@ -59,7 +65,9 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 	}
 
 	JWTToken, err := JWT.CreateToken(DBAccount)
+	fmt.Println(JWTToken)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -105,7 +113,7 @@ func createUser(Writer http.ResponseWriter, Request *http.Request) {
 		Writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	err = KeyHook.CreateNewAccount(NewAccount.EMAIL)
+	err = keyhook.CreateKeyHookAccount(NewAccount.EMAIL)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
@@ -117,11 +125,10 @@ func createUser(Writer http.ResponseWriter, Request *http.Request) {
 
 func updateUser(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-
 	err := JWT.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
 		Writer.WriteHeader(http.StatusUnauthorized)
-		Writer.Write([]byte("Invalid Token"))
+		Writer.Write([]byte(err.Error()))
 		return
 	}
 
@@ -129,10 +136,10 @@ func updateUser(Writer http.ResponseWriter, Request *http.Request) {
 
 func deleteUser(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	err := JWT.ValidateToken(Request)
+	err := JWT.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
 		Writer.WriteHeader(http.StatusUnauthorized)
-		Writer.Write([]byte("Invalid Token"))
+		Writer.Write([]byte(err.Error()))
 		return
 	}
 	Request.ParseForm()
@@ -141,3 +148,7 @@ func deleteUser(Writer http.ResponseWriter, Request *http.Request) {
 	return
 	//KeyHook.DeleteKeyHookAccount(Request.FormValue("email"))
 }
+
+/*
+
+ */

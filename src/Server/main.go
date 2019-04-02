@@ -2,7 +2,7 @@ package main
 
 import (
 	"Artemis/App/KeyHook"
-	"Artemis/Routes"
+	"Artemis/routes"
 	"context"
 	"fmt"
 	"log"
@@ -13,14 +13,15 @@ import (
 	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
-//function used just to check if the server is running
-func HealthCheck(a_Writer http.ResponseWriter, a_Reader *http.Request) {
+//HealthCheck function used just to check if the server is running
+func HealthCheck(Writer http.ResponseWriter, Reader *http.Request) {
 	fmt.Printf("GET\t/\t200")
-	fmt.Fprintf(a_Writer, "The server is up and running")
-	a_Writer.WriteHeader(http.StatusOK)
+	fmt.Fprintf(Writer, "The server is up and running")
+	Writer.WriteHeader(http.StatusOK)
 	return
 }
 
+//CreateDatabaseConnection Connects the database to the different files
 func CreateDatabaseConnection() *mongo.Client {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -35,13 +36,13 @@ func CreateDatabaseConnection() *mongo.Client {
 func main() {
 	router := mux.NewRouter()
 	DBConnection := CreateDatabaseConnection()
-	Routes.DBClient = DBConnection
-	KeyHook.DBClient = DBConnection
+	routes.DBClient = DBConnection
+	keyhook.DBClient = DBConnection
 
 	//Adding the Handlers for each route
 	router.HandleFunc("/", HealthCheck).Methods("GET")
-	Routes.SetAuthRoutes(router)
-	Routes.SetKeyHookRoutes(router)
+	routes.SetAuthRoutes(router)
+	routes.SetKeyHookRoutes(router)
 
 	if err := http.ListenAndServe(":3000", router); err != nil {
 		log.Fatal(err)
