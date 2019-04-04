@@ -39,7 +39,7 @@ func addKey(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	err := JWT.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
-		fmt.Println("POST\t\\Auth\t" + string(http.StatusUnauthorized))
+		fmt.Fprintf(os.Stdout, "POST\t\\KeyHook\t"+string(http.StatusUnauthorized)+"\n")
 		Writer.WriteHeader(http.StatusUnauthorized)
 		Writer.Write([]byte("Invalid Token"))
 		return
@@ -48,8 +48,10 @@ func addKey(Writer http.ResponseWriter, Request *http.Request) {
 	addRequest := keyHookRequest{}
 	err = json.NewDecoder(Request.Body).Decode(&addRequest)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, err.Error())
+		fmt.Fprintf(os.Stderr, err.Error()+"\n")
+		fmt.Fprintf(os.Stdout, "POST\t\\KeyHook\t"+string(http.StatusInternalServerError)+"\n")
 		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte(err.Error()))
 		return
 	}
 
@@ -76,7 +78,7 @@ func getKeys(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 
-	GetRequest, err := parseHTTPRequest(Request)
+	GetRequest, err := parseKeyHookRequest(Request)
 	if err != nil {
 		Writer.WriteHeader(http.StatusInternalServerError)
 		Writer.Write([]byte(err.Error()))
@@ -98,7 +100,7 @@ func modifyKey(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 
-	RequestLogin, err := parseHTTPRequest(Request)
+	RequestLogin, err := parseKeyHookRequest(Request)
 	if err != nil {
 		Writer.WriteHeader(http.StatusInternalServerError)
 		Writer.Write([]byte(err.Error()))
@@ -122,7 +124,7 @@ func removeKey(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 
-	removeRequest, err := parseHTTPRequest(Request)
+	removeRequest, err := parseKeyHookRequest(Request)
 	if err != nil {
 		Writer.WriteHeader(http.StatusInternalServerError)
 		Writer.Write([]byte(err.Error()))
@@ -133,7 +135,7 @@ func removeKey(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
-func parseHTTPRequest(Request *http.Request) (keyHookRequest, error) {
+func parseKeyHookRequest(Request *http.Request) (keyHookRequest, error) {
 	NewRequest := keyHookRequest{}
 	err := json.NewDecoder(Request.Body).Decode(&NewRequest)
 	if err != nil {

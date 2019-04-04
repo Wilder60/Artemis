@@ -51,7 +51,6 @@ func AddNewKey(email, WebsiteName string) error {
 
 //GetAllkeys Gets all the keys for a single user
 func GetAllkeys(email string) []byte {
-	fmt.Fprintf(os.Stdout, email)
 	keysCollection := DBClient.Database("db").Collection("Keys")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -110,6 +109,7 @@ func RemoveKeys(email string, Websites []string) error {
 }
 
 func generateNewPassword() string {
+	rand.Seed(time.Now().UTC().UnixNano())
 	const KeyLexicon = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?@#$%^&*-_+=/"
 	NewKey := make([]byte, 32)
 	for i := range NewKey {

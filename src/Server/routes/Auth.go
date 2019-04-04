@@ -17,10 +17,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//POST   - To validate a login is good or not
-//PUT    - To create a new user
-//UPDATE - To update an account with new user info
-//DELETE - To remove a user from the database (and cancel all there active alarms)
+/*
+	POST   -> To validate a login is good or not
+	PUT    -> To create a new user
+	UPDATE -> To update an account with new user info
+	DELETE -> To remove a user from the database (and cancel all there active alarms)
+*/
 
 //DBClient connection to the the mongo connect that will be connected in main
 var DBClient *mongo.Client

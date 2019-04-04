@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Artemis/App/Calender"
 	"Artemis/App/KeyHook"
 	"Artemis/routes"
 	"context"
@@ -38,12 +39,16 @@ func main() {
 	DBConnection := CreateDatabaseConnection()
 	routes.DBClient = DBConnection
 	keyhook.DBClient = DBConnection
+	calender.DBClient = DBConnection
 
 	//Adding the Handlers for each route
 	router.HandleFunc("/", HealthCheck).Methods("GET")
 	routes.SetAuthRoutes(router)
 	routes.SetKeyHookRoutes(router)
+	routes.SetCalenderRoutes(router)
 
+	calender.StartAlarms()
+	defer calender.ShutDownAlarms()
 	if err := http.ListenAndServe(":3000", router); err != nil {
 		log.Fatal(err)
 	}
