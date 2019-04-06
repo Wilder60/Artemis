@@ -53,7 +53,7 @@ func createEvent(Writer http.ResponseWriter, Request *http.Request) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte("Error processing event"))
+		Writer.Write([]byte("Error Parsing Data"))
 		return
 	}
 	Writer.WriteHeader(http.StatusAccepted)
@@ -62,15 +62,91 @@ func createEvent(Writer http.ResponseWriter, Request *http.Request) {
 
 func getUpcomingEvents(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
+	AuthErr := JWT.ValidateToken(Request.Header["Authorization"][0])
+	if AuthErr != nil {
+		fmt.Fprintf(os.Stderr, AuthErr.Error())
+		Writer.WriteHeader(http.StatusUnauthorized)
+		Writer.Write([]byte("Invalid token"))
+		return
+	}
+	GetRequest, ParseErr := parseCalenderRequest(Request)
+	if ParseErr != nil {
+		fmt.Fprintf(os.Stderr, ParseErr.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte("Error Parsing Data"))
+		return
+	}
+
+	_, err := calender.GetEvents(GetRequest)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte("Something went wrong"))
+		return
+	}
+
+	Writer.WriteHeader(http.StatusAccepted)
+	return
 }
 
 func updateEvent(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
+	AuthErr := JWT.ValidateToken(Request.Header["Authorization"][0])
+	if AuthErr != nil {
+		fmt.Fprintf(os.Stderr, AuthErr.Error())
+		Writer.WriteHeader(http.StatusUnauthorized)
+		Writer.Write([]byte("Invalid token"))
+		return
+	}
+
+	updateRequest, ParseErr := parseCalenderRequest(Request)
+	if ParseErr != nil {
+		fmt.Fprintf(os.Stderr, ParseErr.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte("Error Parsing Data"))
+		return
+	}
+
+	err := calender.EditEvent(updateRequest)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte("Something went wrong"))
+		return
+	}
+
+	Writer.WriteHeader(http.StatusAccepted)
+	return
 }
 
 //removeEvent
 func removeEvent(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
+	AuthErr := JWT.ValidateToken(Request.Header["Authorization"][0])
+	if AuthErr != nil {
+		fmt.Fprintf(os.Stderr, AuthErr.Error())
+		Writer.WriteHeader(http.StatusUnauthorized)
+		Writer.Write([]byte("Invalid token"))
+		return
+	}
+
+	removeRequest, ParseErr := parseCalenderRequest(Request)
+	if ParseErr != nil {
+		fmt.Fprintf(os.Stderr, ParseErr.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte("Error Parsing Data"))
+		return
+	}
+
+	err := calender.RemoveRunningEvent(removeRequest)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, err.Error())
+		Writer.WriteHeader(http.StatusInternalServerError)
+		Writer.Write([]byte("Something went wrong"))
+		return
+	}
+	Writer.WriteHeader(http.StatusAccepted)
+	return
 }
 
 //------------------------------UTILITY FUNCTIONS----------------------------//
@@ -81,15 +157,4 @@ func parseCalenderRequest(Request *http.Request) (calender.EventInfo, error) {
 		return calender.EventInfo{}, err
 	}
 	return NewEvent, nil
-
 }
-
-/*
-func stringToTime(aTimeString string) (time.Time, error) {
-	MsInt, err := strconv.ParseInt(a_TimeString, 10, 64)
-	if err != nil {
-		return time.Time{}, nil
-	}
-	return time.Unix(0, MsInt*int64(time.Millisecond)), nil
-}
-*/
