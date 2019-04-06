@@ -1,6 +1,7 @@
 package keyhook
 
 import (
+	"Artemis/Security/Crypto"
 	"context"
 	"encoding/json"
 	"errors"
@@ -38,7 +39,12 @@ func AddNewKey(email, WebsiteName string) error {
 	if found {
 		return errors.New("website already has a password")
 	}
-	Account.Keys[WebsiteName] = generateNewPassword()
+
+	Epassword, EncryptErr := crypto.Encrypt(generateNewPassword())
+	if EncryptErr != nil {
+		return EncryptErr
+	}
+	Account.Keys[WebsiteName] = Epassword
 
 	keysCollection.UpdateOne(
 		ctx,
@@ -57,6 +63,15 @@ func GetAllkeys(email string) []byte {
 
 	UserAccount := keyHookAccount{}
 	keysCollection.FindOne(ctx, bson.M{"email": email}).Decode(&UserAccount)
+
+	for Website, password := range UserAccount.Keys {
+		rawPass, err := crypto.Decrypt(password)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, err.Error())
+		} else {
+			UserAccount.Keys[Website] = rawPass
+		}
+	}
 
 	FlattenMap, err := json.Marshal(UserAccount.Keys)
 	if err != nil {
