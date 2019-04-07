@@ -37,7 +37,7 @@ func SetKeyHookRoutes(router *mux.Router) *mux.Router {
 //Adds a key to the appropiate account
 func addKey(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	err := JWT.ValidateToken(Request.Header["Authorization"][0])
+	err := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "POST\t\\KeyHook\t"+string(http.StatusUnauthorized)+"\n")
 		Writer.WriteHeader(http.StatusUnauthorized)
@@ -71,7 +71,7 @@ func addKey(Writer http.ResponseWriter, Request *http.Request) {
 
 func getKeys(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	err := JWT.ValidateToken(Request.Header["Authorization"][0])
+	err := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
 		Writer.WriteHeader(http.StatusUnauthorized)
 		Writer.Write([]byte("Invalid Token"))
@@ -93,7 +93,7 @@ func getKeys(Writer http.ResponseWriter, Request *http.Request) {
 
 func modifyKey(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	err := JWT.ValidateToken(Request.Header["Authorization"][0])
+	err := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
 		Writer.WriteHeader(http.StatusUnauthorized)
 		Writer.Write([]byte("Invalid Token"))
@@ -117,7 +117,7 @@ func modifyKey(Writer http.ResponseWriter, Request *http.Request) {
 }
 
 func removeKey(Writer http.ResponseWriter, Request *http.Request) {
-	err := JWT.ValidateToken(Request.Header["Authorization"][0])
+	err := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
 		Writer.WriteHeader(http.StatusUnauthorized)
 		Writer.Write([]byte("Invalid Token"))

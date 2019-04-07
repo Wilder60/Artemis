@@ -147,16 +147,20 @@ func StartAlarms() {
 	}
 	calenderCollection = DBClient.Database("db").Collection("Calender")
 
-	var Documents []EventInfo
-	cursor, _ := calenderCollection.Find(ctx, bson.M{})
-	cursor.Decode(&Documents)
+	cursor, _ := calenderCollection.Find(ctx, bson.D{})
+	defer cursor.Close(ctx)
 
-	for i := 0; i < len(Documents); i++ {
-		closeMap[Documents[i].EventID] = make(chan string, 1)
-		updateMap[Documents[i].EventID] = make(chan EventInfo, 1)
-		go startCountDown(Documents[i], closeMap[Documents[i].EventID], updateMap[Documents[i].EventID])
+	Event := EventInfo{}
+	for cursor.Next(ctx) {
+		err := cursor.Decode(&Event)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, err.Error())
+		}
+		closeMap[Event.EventID] = make(chan string, 1)
+		updateMap[Event.EventID] = make(chan EventInfo, 1)
+		go startCountDown(Event, closeMap[Event.EventID], updateMap[Event.EventID])
+
 	}
-
 	return
 }
 

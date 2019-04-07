@@ -17,7 +17,7 @@ namespace ArtemisDesktopClient
             firstname = null;
             lastname = null;
         }
-
+       
         public IEnumerable<string> mastertoken { get; set; }
         public IEnumerable<string> refreshtoken { get; set; }
         public string email { get; set; }

@@ -31,7 +31,7 @@ func SetCalenderRoutes(router *mux.Router) *mux.Router {
 func createEvent(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	//this the person making the request valid
-	AuthErr := JWT.ValidateToken(Request.Header["Authorization"][0])
+	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if AuthErr != nil {
 		fmt.Fprintf(os.Stderr, AuthErr.Error())
 		Writer.WriteHeader(http.StatusUnauthorized)
@@ -62,7 +62,7 @@ func createEvent(Writer http.ResponseWriter, Request *http.Request) {
 
 func getUpcomingEvents(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	AuthErr := JWT.ValidateToken(Request.Header["Authorization"][0])
+	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if AuthErr != nil {
 		fmt.Fprintf(os.Stderr, AuthErr.Error())
 		Writer.WriteHeader(http.StatusUnauthorized)
@@ -91,7 +91,7 @@ func getUpcomingEvents(Writer http.ResponseWriter, Request *http.Request) {
 
 func updateEvent(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	AuthErr := JWT.ValidateToken(Request.Header["Authorization"][0])
+	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if AuthErr != nil {
 		fmt.Fprintf(os.Stderr, AuthErr.Error())
 		Writer.WriteHeader(http.StatusUnauthorized)
@@ -122,7 +122,7 @@ func updateEvent(Writer http.ResponseWriter, Request *http.Request) {
 //removeEvent
 func removeEvent(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
-	AuthErr := JWT.ValidateToken(Request.Header["Authorization"][0])
+	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if AuthErr != nil {
 		fmt.Fprintf(os.Stderr, AuthErr.Error())
 		Writer.WriteHeader(http.StatusUnauthorized)

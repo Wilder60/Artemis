@@ -18,19 +18,19 @@ import (
 var DBClient *mongo.Client
 
 type keyHookAccount struct {
-	Email string            `json:"email"`
-	Keys  map[string]string `json:"keys"`
+	ID   string            `json:"email"`
+	Keys map[string]string `json:"keys"`
 }
 
 //AddNewKey Adds a new key to the user document
-func AddNewKey(email, WebsiteName string) error {
+func AddNewKey(AccountID, WebsiteName string) error {
 	//Opening Up the Database connection and context
 	keysCollection := DBClient.Database("db").Collection("Keys")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	Account := keyHookAccount{}
-	keysCollection.FindOne(ctx, bson.M{"email": email}).Decode(&Account)
+	keysCollection.FindOne(ctx, bson.M{"id": AccountID}).Decode(&Account)
 	if Account.Keys == nil {
 		Account.Keys = make(map[string]string)
 	}
@@ -48,7 +48,7 @@ func AddNewKey(email, WebsiteName string) error {
 
 	keysCollection.UpdateOne(
 		ctx,
-		bson.M{"email": email},
+		bson.M{"id": AccountID},
 		bson.M{"$set": bson.M{"keys": Account.Keys}},
 	)
 
@@ -56,13 +56,13 @@ func AddNewKey(email, WebsiteName string) error {
 }
 
 //GetAllkeys Gets all the keys for a single user
-func GetAllkeys(email string) []byte {
+func GetAllkeys(AccountID string) []byte {
 	keysCollection := DBClient.Database("db").Collection("Keys")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	UserAccount := keyHookAccount{}
-	keysCollection.FindOne(ctx, bson.M{"email": email}).Decode(&UserAccount)
+	keysCollection.FindOne(ctx, bson.M{"id": AccountID}).Decode(&UserAccount)
 
 	for Website, password := range UserAccount.Keys {
 		rawPass, err := crypto.Decrypt(password)
@@ -81,12 +81,12 @@ func GetAllkeys(email string) []byte {
 }
 
 //ModifyExistingKey Will change a password for website
-func ModifyExistingKey(email, WebsiteName string) error {
+func ModifyExistingKey(AccountID, WebsiteName string) error {
 	keysCollection := DBClient.Database("db").Collection("Keys")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	UserAccount := keyHookAccount{}
-	DecodeErr := keysCollection.FindOne(ctx, bson.M{"email": email}).Decode(&UserAccount)
+	DecodeErr := keysCollection.FindOne(ctx, bson.M{"id": AccountID}).Decode(&UserAccount)
 	if DecodeErr != nil {
 		return DecodeErr
 	}
@@ -95,7 +95,7 @@ func ModifyExistingKey(email, WebsiteName string) error {
 		return errors.New("No Website Exists")
 	}
 	UserAccount.Keys[WebsiteName] = generateNewPassword()
-	_, err := keysCollection.UpdateOne(ctx, bson.M{"email": email}, UserAccount)
+	_, err := keysCollection.UpdateOne(ctx, bson.M{"id": AccountID}, UserAccount)
 	if err != nil {
 		return err
 	}
@@ -103,12 +103,12 @@ func ModifyExistingKey(email, WebsiteName string) error {
 }
 
 //RemoveKeys Removes one or more keys from a user document
-func RemoveKeys(email string, Websites []string) error {
+func RemoveKeys(AccountID string, Websites []string) error {
 	keysCollection := DBClient.Database("db").Collection("Keys")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	UserAccount := keyHookAccount{}
-	keysCollection.FindOne(ctx, bson.M{"email": email}).Decode(&UserAccount)
+	keysCollection.FindOne(ctx, bson.M{"id": AccountID}).Decode(&UserAccount)
 
 	for _, Website := range Websites {
 		delete(UserAccount.Keys, Website)
@@ -116,7 +116,7 @@ func RemoveKeys(email string, Websites []string) error {
 
 	keysCollection.UpdateOne(
 		ctx,
-		bson.M{"email": email},
+		bson.M{"id": AccountID},
 		bson.M{"$set": bson.M{"keys": UserAccount.Keys}},
 	)
 
@@ -134,13 +134,13 @@ func generateNewPassword() string {
 }
 
 //CreateKeyHookAccount Creates a new Document for the user
-func CreateKeyHookAccount(Newemail string) error {
+func CreateKeyHookAccount(AccountID string) error {
 	keysCollection := DBClient.Database("db").Collection("Keys")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	NewAccount := keyHookAccount{}
-	NewAccount.Email = Newemail
+	NewAccount.ID = AccountID
 	_, err := keysCollection.InsertOne(ctx, NewAccount)
 	if err != nil {
 		return err
@@ -150,12 +150,12 @@ func CreateKeyHookAccount(Newemail string) error {
 }
 
 //DeleteKeyHookAccount Removes an account with the associated email name
-func DeleteKeyHookAccount(emailToDelete string) error {
+func DeleteKeyHookAccount(AccountID string) error {
 	keysCollection := DBClient.Database("db").Collection("Keys")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	_, DeleteErr := keysCollection.DeleteOne(ctx, bson.M{"email": emailToDelete})
+	_, DeleteErr := keysCollection.DeleteOne(ctx, bson.M{"id": AccountID})
 	if DeleteErr != nil {
 		return DeleteErr
 	}
