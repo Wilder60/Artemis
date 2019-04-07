@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddKeyHookPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddKeyHookPage.Designer.cs">
+      <DependentUpon>AddKeyHookPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="ArtemisAccountSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +77,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserAccount.cs" />
+    <EmbeddedResource Include="AddKeyHookPage.resx">
+      <DependentUpon>AddKeyHookPage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ArtemisMainPage.resx">
       <DependentUpon>ArtemisMainPage.cs</DependentUpon>
     </EmbeddedResource>

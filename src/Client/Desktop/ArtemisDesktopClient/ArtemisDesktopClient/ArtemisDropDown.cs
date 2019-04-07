@@ -10,8 +10,9 @@ namespace ArtemisDesktopClient
     {
         partial void ButtonKeyHookClick(object sender, EventArgs e)
         {
-            this.PanelKeyHook.Show();
-            this.PanelKeyHook.BringToFront();
+            PanelControl["KeyHook"].Show();
+            PanelControl["KeyHook"].BringToFront();
+            refreshKeyHookpage();
         }
 
         partial void Button2Click(object sender, EventArgs e)

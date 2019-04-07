@@ -61,6 +61,7 @@ namespace ArtemisDesktopClient
                     ArtemisMainPage MainPage = new ArtemisMainPage(Token, account);
                     this.Hide();
                     MainPage.Show(this);
+                    resetLogin();
                 }
             }
             catch (Exception HTTPexcpt)
@@ -68,6 +69,15 @@ namespace ArtemisDesktopClient
                 LabelLoginError.Text = HTTPexcpt.Message;
             }
 
+        }
+
+        private void resetLogin()
+        {
+            TextBoxLoginEmail.Text = "Email (email@example.com)";
+            TextBoxLoginEmail.ForeColor = Color.Gray;
+            TextBoxLoginPassword.Text = "Password";
+            TextBoxLoginPassword.PasswordChar = '\0';
+            TextBoxLoginPassword.ForeColor = Color.Gray;
         }
 
         /* This will return the same as the Post call and redirect to the new form*/
@@ -146,7 +156,7 @@ namespace ArtemisDesktopClient
 
             switch (((TextBox)sender).Name)
             {
-                case "TextBoxPassword":
+                case "TextBoxLoginPassword":
                     ((TextBox)sender).PasswordChar = '*';
                     break;
                 case "TextBoxCreatePassword":

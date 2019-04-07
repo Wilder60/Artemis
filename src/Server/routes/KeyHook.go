@@ -14,7 +14,7 @@ import (
 //TODO: Add Crypto to the keys
 
 type keyHookRequest struct {
-	Email        string   `form:"email"`
+	ID           string   `form:"id"`
 	Website      string   `form:"website,omitempty"`
 	WebsiteArray []string `form:"websiteArray,omitempty"`
 }
@@ -23,13 +23,13 @@ type keyHookRequest struct {
 SetKeyHookRoutes Setting the functions for the KeyHook routes
 	POST	-> Add a key for a user
 	GET		-> Get all the keys for a single user
-	PATCH	-> Update one of the Keys (KeyName or KeyPass)
+	PUT	-> Update one of the Keys (KeyName or KeyPass)
 	DELETE 	-> Remove a Key from a user list
 */
 func SetKeyHookRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/KeyHook", addKey).Methods("POST")
 	router.HandleFunc("/KeyHook", getKeys).Methods("GET")
-	router.HandleFunc("/KeyHook", modifyKey).Methods("PATCH")
+	router.HandleFunc("/KeyHook", modifyKey).Methods("PUT")
 	router.HandleFunc("/KeyHook", removeKey).Methods("DELETE")
 	return router
 }
@@ -55,15 +55,15 @@ func addKey(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 
-	err = keyhook.AddNewKey(addRequest.Email, addRequest.Website)
+	err = keyhook.AddNewKey(addRequest.ID, addRequest.Website)
 	if err != nil {
-		fmt.Printf("POST\t\\Auth\t500")
+		fmt.Printf("POST\t\\Auth\t500\n")
 		Writer.WriteHeader(http.StatusInternalServerError)
 		Writer.Write([]byte(err.Error()))
 		return
 	}
 
-	fmt.Printf("POST\t\\Auth\t202")
+	fmt.Printf("POST\t\\Auth\t202\n")
 	Writer.WriteHeader(http.StatusAccepted)
 	return
 
@@ -84,7 +84,7 @@ func getKeys(Writer http.ResponseWriter, Request *http.Request) {
 		Writer.Write([]byte(err.Error()))
 	}
 
-	Keys := keyhook.GetAllkeys(GetRequest.Email)
+	Keys := keyhook.GetAllkeys(GetRequest.ID)
 	//loop and decrypt the keys
 	Writer.WriteHeader(http.StatusOK)
 	Writer.Write(Keys)
@@ -107,7 +107,7 @@ func modifyKey(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 
-	err = keyhook.ModifyExistingKey(RequestLogin.Email, RequestLogin.Website)
+	err = keyhook.ModifyExistingKey(RequestLogin.ID, RequestLogin.Website)
 	if err != nil {
 		Writer.WriteHeader(http.StatusNotFound)
 		return
@@ -130,7 +130,7 @@ func removeKey(Writer http.ResponseWriter, Request *http.Request) {
 		Writer.Write([]byte(err.Error()))
 		return
 	}
-	keyhook.RemoveKeys(removeRequest.Email, removeRequest.WebsiteArray)
+	keyhook.RemoveKeys(removeRequest.ID, removeRequest.WebsiteArray)
 	Writer.WriteHeader(http.StatusAccepted)
 	return
 }

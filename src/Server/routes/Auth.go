@@ -46,6 +46,7 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 
 	LoginRequest, err := parseAuthRequest(Request)
 	if err != nil {
+		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t500\n")
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
 		return
@@ -54,6 +55,7 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 	DBAccount := account.Account{}
 	SearchErr := AccountsCollection.FindOne(ctx, bson.M{"email": LoginRequest.Email}).Decode(&DBAccount)
 	if SearchErr != nil {
+		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t500\n")
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
 		return
@@ -61,12 +63,14 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 
 	ValidHash := bcrypt.CompareHashAndPassword([]byte(DBAccount.Password), []byte(LoginRequest.Password))
 	if ValidHash != nil {
+		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t404\n")
 		Writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	JWTToken, err := jwt.CreateToken(DBAccount)
 	if err != nil {
+		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t500\n")
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
 		return
@@ -75,11 +79,13 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 	DBAccount.Password = ""
 	EncodeAccount, err := json.Marshal(DBAccount)
 	if err != nil {
+		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t500\n")
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	fmt.Fprintf(os.Stdout, "POST\t\\Auth\t200\n")
 	Writer.Header().Set("MasterToken", JWTToken)
 	Writer.WriteHeader(http.StatusAccepted)
 	Writer.Write(EncodeAccount)
@@ -120,7 +126,7 @@ func createUser(Writer http.ResponseWriter, Request *http.Request) {
 	}
 	NewAccount.Password = string(HASHPASS)
 	id := xid.NewWithTime(time.Now())
-	NewAccount.Id = id.String()
+	NewAccount.ID = id.String()
 	NewAccount.PageStyle = "Modern"
 
 	_, Inserterr := AccConnection.InsertOne(ctx, NewAccount)
@@ -129,7 +135,7 @@ func createUser(Writer http.ResponseWriter, Request *http.Request) {
 		Writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	err = keyhook.CreateKeyHookAccount(NewAccount.Id)
+	err = keyhook.CreateKeyHookAccount(NewAccount.ID)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
@@ -173,14 +179,14 @@ func deleteUser(Writer http.ResponseWriter, Request *http.Request) {
 		Writer.Write([]byte("Error parsing data"))
 		return
 	}
-	_, err = AccountsCollection.DeleteOne(ctx, bson.M{"id": DeleteRequest.Id})
+	_, err = AccountsCollection.DeleteOne(ctx, bson.M{"id": DeleteRequest.ID})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
 		Writer.Write([]byte("Error parsing data"))
 		return
 	}
-	keyhook.DeleteKeyHookAccount(DeleteRequest.Id)
+	keyhook.DeleteKeyHookAccount(DeleteRequest.ID)
 	Writer.WriteHeader(http.StatusOK)
 	return
 

@@ -18,5 +18,6 @@ namespace ArtemisDesktopClient
         public string pageStyle { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
+        public string updatepassword { get; set; }
     }
 }

@@ -67,11 +67,11 @@
             this.TextBoxEmail = new System.Windows.Forms.TextBox();
             this.LabelAccountTitle = new System.Windows.Forms.Label();
             this.ButtonAccountShowMenu = new System.Windows.Forms.Button();
-            this.VScrollBarDynamicKeyHook = new System.Windows.Forms.VScrollBar();
+            this.LabelKeyHookDescription = new System.Windows.Forms.Label();
+            this.ButtonCreateNewPassword = new System.Windows.Forms.Button();
             this.PanelArtemisVoice.SuspendLayout();
             this.PanelSideMenu.SuspendLayout();
             this.PanelKeyHook.SuspendLayout();
-            this.PanelDynamicKeyHook.SuspendLayout();
             this.PanelAccountSettings.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -227,6 +227,8 @@
             // PanelKeyHook
             // 
             this.PanelKeyHook.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.PanelKeyHook.Controls.Add(this.ButtonCreateNewPassword);
+            this.PanelKeyHook.Controls.Add(this.LabelKeyHookDescription);
             this.PanelKeyHook.Controls.Add(this.PanelDynamicKeyHook);
             this.PanelKeyHook.Controls.Add(this.ButtonDeleteKeys);
             this.PanelKeyHook.Controls.Add(this.ButtonResetKeys);
@@ -243,15 +245,16 @@
             // 
             // PanelDynamicKeyHook
             // 
-            this.PanelDynamicKeyHook.Controls.Add(this.VScrollBarDynamicKeyHook);
-            this.PanelDynamicKeyHook.Location = new System.Drawing.Point(300, 0);
+            this.PanelDynamicKeyHook.AutoScroll = true;
+            this.PanelDynamicKeyHook.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.PanelDynamicKeyHook.Location = new System.Drawing.Point(275, 75);
             this.PanelDynamicKeyHook.Name = "PanelDynamicKeyHook";
-            this.PanelDynamicKeyHook.Size = new System.Drawing.Size(850, 800);
+            this.PanelDynamicKeyHook.Size = new System.Drawing.Size(875, 725);
             this.PanelDynamicKeyHook.TabIndex = 5;
             // 
             // ButtonDeleteKeys
             // 
-            this.ButtonDeleteKeys.Location = new System.Drawing.Point(25, 270);
+            this.ButtonDeleteKeys.Location = new System.Drawing.Point(25, 330);
             this.ButtonDeleteKeys.Name = "ButtonDeleteKeys";
             this.ButtonDeleteKeys.Size = new System.Drawing.Size(200, 50);
             this.ButtonDeleteKeys.TabIndex = 4;
@@ -260,7 +263,7 @@
             // 
             // ButtonResetKeys
             // 
-            this.ButtonResetKeys.Location = new System.Drawing.Point(25, 210);
+            this.ButtonResetKeys.Location = new System.Drawing.Point(25, 270);
             this.ButtonResetKeys.Name = "ButtonResetKeys";
             this.ButtonResetKeys.Size = new System.Drawing.Size(200, 50);
             this.ButtonResetKeys.TabIndex = 3;
@@ -269,7 +272,7 @@
             // 
             // ButtonCopyKeys
             // 
-            this.ButtonCopyKeys.Location = new System.Drawing.Point(25, 150);
+            this.ButtonCopyKeys.Location = new System.Drawing.Point(25, 210);
             this.ButtonCopyKeys.Name = "ButtonCopyKeys";
             this.ButtonCopyKeys.Size = new System.Drawing.Size(200, 50);
             this.ButtonCopyKeys.TabIndex = 2;
@@ -281,7 +284,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(1160, 8);
+            this.label1.Location = new System.Drawing.Point(1160, 10);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(132, 39);
             this.label1.TabIndex = 1;
@@ -517,14 +520,26 @@
             this.ButtonAccountShowMenu.UseVisualStyleBackColor = true;
             this.ButtonAccountShowMenu.Click += new System.EventHandler(this.button4_Click);
             // 
-            // VScrollBarDynamicKeyHook
+            // LabelKeyHookDescription
             // 
-            this.VScrollBarDynamicKeyHook.Dock = System.Windows.Forms.DockStyle.Right;
-            this.VScrollBarDynamicKeyHook.Location = new System.Drawing.Point(833, 0);
-            this.VScrollBarDynamicKeyHook.Name = "VScrollBarDynamicKeyHook";
-            this.VScrollBarDynamicKeyHook.Size = new System.Drawing.Size(17, 800);
-            this.VScrollBarDynamicKeyHook.TabIndex = 0;
-            this.VScrollBarDynamicKeyHook.Scroll += (sender, e) => { PanelDynamicKeyHook.VerticalScroll.Value = this.Value; };
+            this.LabelKeyHookDescription.AutoSize = true;
+            this.LabelKeyHookDescription.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelKeyHookDescription.ForeColor = System.Drawing.Color.White;
+            this.LabelKeyHookDescription.Location = new System.Drawing.Point(275, 13);
+            this.LabelKeyHookDescription.Name = "LabelKeyHookDescription";
+            this.LabelKeyHookDescription.Size = new System.Drawing.Size(418, 39);
+            this.LabelKeyHookDescription.TabIndex = 6;
+            this.LabelKeyHookDescription.Text = "Fast, Secure, Password storage";
+            // 
+            // ButtonCreateNewPassword
+            // 
+            this.ButtonCreateNewPassword.Location = new System.Drawing.Point(25, 150);
+            this.ButtonCreateNewPassword.Name = "ButtonCreateNewPassword";
+            this.ButtonCreateNewPassword.Size = new System.Drawing.Size(200, 50);
+            this.ButtonCreateNewPassword.TabIndex = 7;
+            this.ButtonCreateNewPassword.Text = "Create New Password";
+            this.ButtonCreateNewPassword.UseVisualStyleBackColor = true;
+            this.ButtonCreateNewPassword.Click += new System.EventHandler(this.ButtonCreateNewPassword_Click);
             // 
             // ArtemisMainPage
             // 
@@ -544,7 +559,6 @@
             this.PanelSideMenu.ResumeLayout(false);
             this.PanelKeyHook.ResumeLayout(false);
             this.PanelKeyHook.PerformLayout();
-            this.PanelDynamicKeyHook.ResumeLayout(false);
             this.PanelAccountSettings.ResumeLayout(false);
             this.PanelAccountSettings.PerformLayout();
             this.ResumeLayout(false);
@@ -592,6 +606,7 @@
         private System.Windows.Forms.Button ButtonResetKeys;
         private System.Windows.Forms.Button ButtonCopyKeys;
         private System.Windows.Forms.Panel PanelDynamicKeyHook;
-        private System.Windows.Forms.VScrollBar VScrollBarDynamicKeyHook;
+        private System.Windows.Forms.Button ButtonCreateNewPassword;
+        private System.Windows.Forms.Label LabelKeyHookDescription;
     }
 }

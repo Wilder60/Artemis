@@ -20,7 +20,7 @@ var signingKey = "AllYourBase"
 //routes other then the login route
 func CreateToken(AccountToTokenize account.Account) (string, error) {
 	claims := artemisClaims{
-		AccountToTokenize.Id,
+		AccountToTokenize.ID,
 		AccountToTokenize.Firstname,
 		AccountToTokenize.Lastname,
 		jwt.StandardClaims{
