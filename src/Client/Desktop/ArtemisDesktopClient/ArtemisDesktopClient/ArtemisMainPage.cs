@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Http;
 
 namespace ArtemisDesktopClient
 {
@@ -18,23 +19,30 @@ namespace ArtemisDesktopClient
         private bool mouseDown;
         private Point lastLocation;
         internal Dictionary<string, Panel> PanelControl;
+        //this is a hack and i dont like it
+        internal IEnumerable<string> _AuthToken;
+        internal UserAccount _Account;
+        internal static HttpClient _client;
         /// <summary>
         /// This is the constructor for the main page of the app
         /// fills the PanelControl
         /// </summary>
-        public ArtemisMainPage()
+        public ArtemisMainPage(IEnumerable<string> Token, UserAccount account)
         {
             InitializeComponent();
+            _client = new HttpClient();
             this.PanelControl = new Dictionary<string, Panel>();
             PanelControl["SideMenu"] = PanelSideMenu;
             PanelControl["Voice"] = PanelArtemisVoice;
             PanelControl["Settings"] = PanelAccountSettings;
             PanelControl["KeyHook"] = PanelKeyHook;
-
+            _AuthToken = Token;
+            _Account = account;
             this.PanelAccountSettings.Hide();
             this.PanelKeyHook.Hide();
             this.PanelSideMenu.Hide();
             this.PanelArtemisVoice.Show();
+            Panelinit();
         }
 
         partial void ButtonArtemisClick(object sender, EventArgs e);
@@ -80,6 +88,25 @@ namespace ArtemisDesktopClient
         private void BackGroundMouseUp(object sender, MouseEventArgs e)
         {
             mouseDown = false;
+        }
+
+        public void Panelinit()
+        {
+            LabelGreating.Text = "";
+            TimeSpan now = DateTime.Now.TimeOfDay;
+            if(now < new TimeSpan(12, 0, 0))
+            {
+                LabelGreating.Text += "Good Morning ";
+            }
+            else if (now < new TimeSpan(18, 0, 0))
+            {
+                LabelGreating.Text += "Good Afternoon ";
+            }
+            else
+            {
+                LabelGreating.Text += "Good Evening ";
+            }
+            LabelGreating.Text += String.Format("{0} {1}", _Account.firstname, _Account.lastname);
         }
 
         /// <summary>

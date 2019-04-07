@@ -30,12 +30,13 @@ namespace ArtemisDesktopClient
         {
             PanelControl["Settings"].Show();
             PanelControl["Settings"].BringToFront();
+            Settingsinit();
         }
 
         partial void ButtonLogOutClick(object sender, EventArgs e)
         {
-            this.Hide();
             this.Owner.Show();
+            this.Close();
         }
     }
 }

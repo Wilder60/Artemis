@@ -56,7 +56,9 @@ namespace ArtemisDesktopClient
                 {
                     IEnumerable<string> Token;
                     response.Headers.TryGetValues("MasterToken", out Token);
-                    ArtemisMainPage MainPage = new ArtemisMainPage();
+                    string name = await response.Content.ReadAsStringAsync();
+                    UserAccount account = new JavaScriptSerializer().Deserialize<UserAccount>(name);
+                    ArtemisMainPage MainPage = new ArtemisMainPage(Token, account);
                     this.Hide();
                     MainPage.Show(this);
                 }
@@ -82,10 +84,15 @@ namespace ArtemisDesktopClient
                 var response = await client.PutAsync("http://localhost:3000/Auth",
                     new StringContent(NewAccountJSON, Encoding.UTF8, "application/json"));
 
-                if (!response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
+                {
+                    PanelLogin.BringToFront();
+                }
+                else
                 {
                     TextBoxNewEmail.Text = "Opps something when wrong";
                 }
+                
             }
             catch(Exception HTTPexcpt)
             {
