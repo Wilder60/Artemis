@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Http;
 using System.Web.Script.Serialization;
+using System.Drawing;
 
 
 namespace ArtemisDesktopClient
@@ -23,30 +24,55 @@ namespace ArtemisDesktopClient
         private async void refreshKeyHookpage()
         {
             KeysDic = await GetKeys();
-            //LabelKeyHookDescription.Text = KeysDic.ToString();
+            if (KeysDic == null)
+            {
+                return;
+            }
+
+            int i = 0;
+            foreach (KeyValuePair<string, string> entry in KeysDic)
+            {
+                CheckBox checkBox = new CheckBox();
+                checkBox.Text = entry.Key;
+                checkBox.Name = "Label" + entry.Key;
+                checkBox.ForeColor = Color.White;
+                checkBox.Location = new Point(0, 0);
+                checkBox.Left = 100;
+                checkBox.Height = 100 + (50 * i);
+
+                Size size = TextRenderer.MeasureText(entry.Key, checkBox.Font);
+                Label ValueLabel = new Label();
+                ValueLabel.Text = entry.Value;
+                ValueLabel.Name = "Label" + entry.Key;
+                checkBox.ForeColor = Color.White;
+                ValueLabel.Location = new Point(0, 0);
+                ValueLabel.Left = size.Width + 50;
+                ValueLabel.Height = 100 + (50 * i);
+
+                PanelDynamicKeyHook.Controls.Add(checkBox);
+                PanelDynamicKeyHook.Controls.Add(ValueLabel);
+                i++;
+            }
+
         }
 
         private async Task<Dictionary<string, string>> GetKeys()
         {
-            Dictionary<string, string> Requestinfo = new Dictionary<string, string>();
-            Requestinfo["id"] = _Account.id;
-            var GetData = new JavaScriptSerializer().Serialize(Requestinfo);
             try
             {
-                HttpRequestMessage GetRequest = new HttpRequestMessage
+
+                HttpRequestMessage PutRequest = new HttpRequestMessage
                 {
-                    Content = new StringContent(GetData, Encoding.UTF8, "application/json"),
                     Method = HttpMethod.Get,
-                    RequestUri = new Uri("http://127.0.0.1:3000/KeyHook")
+                    RequestUri = new Uri("http://127.0.0.1:3000/KeyHook?id=" + _Account.id)
                 };
-                GetRequest.Headers.Add("Authorization", _AuthToken);
-                var response = await _client.SendAsync(GetRequest);
+                PutRequest.Headers.Add("Authorization", _AuthToken);
+                var response = await _client.SendAsync(PutRequest);
                 if (!response.IsSuccessStatusCode)
                 {
                     return null;
                 }
                 string keysAndpass = await response.Content.ReadAsStringAsync();
-                LabelKeyHookDescription.Text = keysAndpass;
                 return new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(keysAndpass);
             }
             catch (Exception HTTPexception)
