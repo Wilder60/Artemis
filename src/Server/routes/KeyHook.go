@@ -78,14 +78,14 @@ func getKeys(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 
-	GetRequest, err := parseKeyHookRequest(Request)
-	if err != nil {
-		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte(err.Error()))
+	UserID, ok := Request.URL.Query()["id"]
+	if !ok {
+		Writer.WriteHeader(http.StatusBadRequest)
+		Writer.Write([]byte("Invalid id"))
+		return
 	}
-
-	Keys := keyhook.GetAllkeys(GetRequest.ID)
-	//loop and decrypt the keys
+	Keys := keyhook.GetAllkeys(UserID[0])
+	fmt.Fprintf(os.Stdout, "GET\t\\KeyHook\t200\n")
 	Writer.WriteHeader(http.StatusOK)
 	Writer.Write(Keys)
 	return

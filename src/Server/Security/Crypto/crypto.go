@@ -36,19 +36,19 @@ func Encrypt(password string) (string, error) {
 }
 
 //Decrypt Decrypts the cipherText
-func Decrypt(cipherString string) (string, error) {
+func Decrypt(cipherString string) ([]byte, error) {
 	cipherText, err := base64.StdEncoding.DecodeString(cipherString)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if len(cipherText) < aes.BlockSize {
-		return "", errors.New("ciphertext block size is too short")
+		return nil, errors.New("ciphertext block size is too short")
 	}
 	iv := cipherText[:aes.BlockSize]
 	cipherText = cipherText[aes.BlockSize:]
@@ -56,6 +56,5 @@ func Decrypt(cipherString string) (string, error) {
 	stream := cipher.NewCFBDecrypter(block, iv)
 
 	stream.XORKeyStream(cipherText, cipherText)
-	plaintext := string(cipherText)
-	return plaintext, nil
+	return cipherText, nil
 }

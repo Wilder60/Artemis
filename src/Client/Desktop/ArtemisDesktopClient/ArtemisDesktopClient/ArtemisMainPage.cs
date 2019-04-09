@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Http;
+using System.Threading;
+using System.Web.Script.Serialization;
 
 namespace ArtemisDesktopClient
 {
@@ -23,6 +25,7 @@ namespace ArtemisDesktopClient
         internal IEnumerable<string> _AuthToken;
         internal UserAccount _Account;
         internal static HttpClient _client;
+        internal volatile bool Run = false;
         /// <summary>
         /// This is the constructor for the main page of the app
         /// fills the PanelControl
@@ -43,6 +46,7 @@ namespace ArtemisDesktopClient
             this.PanelSideMenu.Hide();
             this.PanelArtemisVoice.Show();
             Panelinit();
+            startlistening();
         }
 
         partial void ButtonArtemisClick(object sender, EventArgs e);
@@ -118,6 +122,38 @@ namespace ArtemisDesktopClient
         {
             PanelControl["SideMenu"].Show();
             PanelControl["SideMenu"].BringToFront();
+        }
+
+        private void startlistening()
+        {
+            Run = true;
+            var thread = new Thread(async () => 
+            {
+                while (Run)
+                {
+                    HttpRequestMessage GetRequest = new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Get,
+                        RequestUri = new Uri("http://127.0.0.1:3000/User?id=" + _Account.id)
+                    };
+                    GetRequest.Headers.Add("Authorization", _AuthToken);
+                    var response = await _client.SendAsync(GetRequest);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string data = await response.Content.ReadAsStringAsync();
+                        CalenderEvent[] calenderEvents;
+                        calenderEvents = new JavaScriptSerializer().Deserialize<CalenderEvent[]>(data);
+                        foreach(var CalEvent in calenderEvents)
+                        {
+                            EventNotification calenderEvent = new EventNotification(_AuthToken, CalEvent);
+                            calenderEvent.ShowDialog();
+                        }
+                        
+                    }
+                    Thread.Sleep(1000);
+                }
+            });
+            thread.Start();
         }
     }
 }

@@ -10,3 +10,4 @@ C:\Users\awild\Documents\Programs\School_Projects\CMPS450_SeniorProject\Artemis\
 C:\Users\awild\Documents\Programs\School_Projects\CMPS450_SeniorProject\Artemis\src\Desktop\ArtemisDesktopClient\ArtemisDesktopClient\obj\Debug\ArtemisDesktopClient.ArtemisPageLogin.resources
 C:\Users\awild\Documents\Programs\School_Projects\CMPS450_SeniorProject\Artemis\src\Desktop\ArtemisDesktopClient\ArtemisDesktopClient\obj\Debug\ArtemisDesktopClient.ArtemisMainPage.resources
 C:\Users\awild\Documents\Programs\School_Projects\CMPS450_SeniorProject\Artemis\src\Desktop\ArtemisDesktopClient\ArtemisDesktopClient\obj\Debug\ArtemisDesktopClient.AddKeyHookPage.resources
+C:\Users\awild\Documents\Programs\School_Projects\CMPS450_SeniorProject\Artemis\src\Desktop\ArtemisDesktopClient\ArtemisDesktopClient\obj\Debug\ArtemisDesktopClient.EventNotification.resources

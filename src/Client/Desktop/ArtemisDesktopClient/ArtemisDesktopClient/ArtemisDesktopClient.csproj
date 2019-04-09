@@ -74,6 +74,13 @@
     <Compile Include="ArtemisPageLogin.Designer.cs">
       <DependentUpon>ArtemisPageLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="CalenderEvent.cs" />
+    <Compile Include="EventNotification.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventNotification.Designer.cs">
+      <DependentUpon>EventNotification.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserAccount.cs" />
@@ -85,6 +92,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ArtemisPageLogin.resx">
       <DependentUpon>ArtemisPageLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventNotification.resx">
+      <DependentUpon>EventNotification.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

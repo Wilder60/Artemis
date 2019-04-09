@@ -36,6 +36,7 @@ namespace ArtemisDesktopClient
 
         partial void ButtonLogOutClick(object sender, EventArgs e)
         {
+            Run = false;
             this.Owner.Show();
             this.Close();
         }

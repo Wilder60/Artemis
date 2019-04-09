@@ -40,15 +40,17 @@ func main() {
 	routes.DBClient = DBConnection
 	keyhook.DBClient = DBConnection
 	calender.DBClient = DBConnection
+	routes.UDBClient = DBConnection
 
 	//Adding the Handlers for each route
 	router.HandleFunc("/", HealthCheck).Methods("GET")
 	routes.SetAuthRoutes(router)
 	routes.SetKeyHookRoutes(router)
 	routes.SetCalenderRoutes(router)
+	routes.SetUserRoutes(router)
 
-	calender.StartAlarms()
-	defer calender.ShutDownAlarms()
+	calender.StartUpCalender()
+	defer calender.ShutDownCalender()
 	if err := http.ListenAndServe(":3000", router); err != nil {
 		log.Fatal(err)
 	}

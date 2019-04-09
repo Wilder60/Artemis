@@ -138,7 +138,7 @@ func removeEvent(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 
-	err := calender.RemoveRunningEvent(removeRequest)
+	err := calender.RemoveEvent(removeRequest)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)

@@ -41,6 +41,8 @@
             this.PanelSideMenu = new System.Windows.Forms.Panel();
             this.ButtonCalender = new System.Windows.Forms.Button();
             this.PanelKeyHook = new System.Windows.Forms.Panel();
+            this.ButtonCreateNewPassword = new System.Windows.Forms.Button();
+            this.LabelKeyHookDescription = new System.Windows.Forms.Label();
             this.PanelDynamicKeyHook = new System.Windows.Forms.Panel();
             this.ButtonDeleteKeys = new System.Windows.Forms.Button();
             this.ButtonResetKeys = new System.Windows.Forms.Button();
@@ -67,8 +69,6 @@
             this.TextBoxEmail = new System.Windows.Forms.TextBox();
             this.LabelAccountTitle = new System.Windows.Forms.Label();
             this.ButtonAccountShowMenu = new System.Windows.Forms.Button();
-            this.LabelKeyHookDescription = new System.Windows.Forms.Label();
-            this.ButtonCreateNewPassword = new System.Windows.Forms.Button();
             this.PanelArtemisVoice.SuspendLayout();
             this.PanelSideMenu.SuspendLayout();
             this.PanelKeyHook.SuspendLayout();
@@ -229,12 +229,12 @@
             this.PanelKeyHook.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.PanelKeyHook.Controls.Add(this.ButtonCreateNewPassword);
             this.PanelKeyHook.Controls.Add(this.LabelKeyHookDescription);
-            this.PanelKeyHook.Controls.Add(this.PanelDynamicKeyHook);
             this.PanelKeyHook.Controls.Add(this.ButtonDeleteKeys);
             this.PanelKeyHook.Controls.Add(this.ButtonResetKeys);
             this.PanelKeyHook.Controls.Add(this.ButtonCopyKeys);
             this.PanelKeyHook.Controls.Add(this.label1);
             this.PanelKeyHook.Controls.Add(this.button3);
+            this.PanelKeyHook.Controls.Add(this.PanelDynamicKeyHook);
             this.PanelKeyHook.Location = new System.Drawing.Point(0, 0);
             this.PanelKeyHook.Name = "PanelKeyHook";
             this.PanelKeyHook.Size = new System.Drawing.Size(1300, 800);
@@ -242,6 +242,27 @@
             this.PanelKeyHook.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseDown);
             this.PanelKeyHook.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseMove);
             this.PanelKeyHook.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseUp);
+            // 
+            // ButtonCreateNewPassword
+            // 
+            this.ButtonCreateNewPassword.Location = new System.Drawing.Point(25, 150);
+            this.ButtonCreateNewPassword.Name = "ButtonCreateNewPassword";
+            this.ButtonCreateNewPassword.Size = new System.Drawing.Size(200, 50);
+            this.ButtonCreateNewPassword.TabIndex = 7;
+            this.ButtonCreateNewPassword.Text = "Create New Password";
+            this.ButtonCreateNewPassword.UseVisualStyleBackColor = true;
+            this.ButtonCreateNewPassword.Click += new System.EventHandler(this.ButtonCreateNewPassword_Click);
+            // 
+            // LabelKeyHookDescription
+            // 
+            this.LabelKeyHookDescription.AutoSize = true;
+            this.LabelKeyHookDescription.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelKeyHookDescription.ForeColor = System.Drawing.Color.White;
+            this.LabelKeyHookDescription.Location = new System.Drawing.Point(275, 13);
+            this.LabelKeyHookDescription.Name = "LabelKeyHookDescription";
+            this.LabelKeyHookDescription.Size = new System.Drawing.Size(418, 39);
+            this.LabelKeyHookDescription.TabIndex = 6;
+            this.LabelKeyHookDescription.Text = "Fast, Secure, Password storage";
             // 
             // PanelDynamicKeyHook
             // 
@@ -520,36 +541,15 @@
             this.ButtonAccountShowMenu.UseVisualStyleBackColor = true;
             this.ButtonAccountShowMenu.Click += new System.EventHandler(this.button4_Click);
             // 
-            // LabelKeyHookDescription
-            // 
-            this.LabelKeyHookDescription.AutoSize = true;
-            this.LabelKeyHookDescription.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelKeyHookDescription.ForeColor = System.Drawing.Color.White;
-            this.LabelKeyHookDescription.Location = new System.Drawing.Point(275, 13);
-            this.LabelKeyHookDescription.Name = "LabelKeyHookDescription";
-            this.LabelKeyHookDescription.Size = new System.Drawing.Size(418, 39);
-            this.LabelKeyHookDescription.TabIndex = 6;
-            this.LabelKeyHookDescription.Text = "Fast, Secure, Password storage";
-            // 
-            // ButtonCreateNewPassword
-            // 
-            this.ButtonCreateNewPassword.Location = new System.Drawing.Point(25, 150);
-            this.ButtonCreateNewPassword.Name = "ButtonCreateNewPassword";
-            this.ButtonCreateNewPassword.Size = new System.Drawing.Size(200, 50);
-            this.ButtonCreateNewPassword.TabIndex = 7;
-            this.ButtonCreateNewPassword.Text = "Create New Password";
-            this.ButtonCreateNewPassword.UseVisualStyleBackColor = true;
-            this.ButtonCreateNewPassword.Click += new System.EventHandler(this.ButtonCreateNewPassword_Click);
-            // 
             // ArtemisMainPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(1300, 800);
-            this.Controls.Add(this.PanelKeyHook);
             this.Controls.Add(this.PanelArtemisVoice);
             this.Controls.Add(this.PanelAccountSettings);
+            this.Controls.Add(this.PanelKeyHook);
             this.Controls.Add(this.PanelSideMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ArtemisMainPage";
