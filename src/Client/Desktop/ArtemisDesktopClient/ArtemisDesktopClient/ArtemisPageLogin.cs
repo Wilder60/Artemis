@@ -13,10 +13,17 @@ using System.Text.RegularExpressions;
 
 namespace ArtemisDesktopClient
 {
+    /// <summary>
+    /// The Functionallity for the Login Page.
+    /// Allows the user to create a new account or login to an existing one.
+    /// </summary>
     public partial class ArtemisPageLogin : Form
     {
+        /// <value>HttpClient for connection to the server.</value>
         private static HttpClient client;
+        /// <value>To determine if the mouse left click is down.</value>
         private bool mouseDown;
+        /// <value>The last location of the mouse.</value>
         private Point lastLocation;
 
         public ArtemisPageLogin()
@@ -25,18 +32,32 @@ namespace ArtemisDesktopClient
             PanelLogin.Visible = true;
             PanelCreateAccount.Visible = false;
         }
-        
-        /*OnLoad page function*/
+
+        /// <summary>
+        /// OnLoad function for this form.
+        /// </summary>
+        /// <remarks>
+        /// This initiazes the HttpClient object and Adds the two panels into a dictionary.
+        /// </remarks>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void ArtemisDesktop_Load(object sender, EventArgs e)
         {
             client = new HttpClient();
         }
 
-        /* Buttons that communicate with the server*/
-        /* This should return from the server the token which will be sent over
-         * Plus the persons JSON without there hashpass so the client can be more
-         * personized
-         */
+        /// <summary>
+        /// OnClick listener for the LoginButton.
+        /// Makes a call the backend. Will open the mainpage form if login was successful.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private async void LoginButton_Click(object sender, EventArgs e)
         {
             UserAccount LoginInfo = new UserAccount();
@@ -71,6 +92,10 @@ namespace ArtemisDesktopClient
 
         }
 
+        /// <summary>
+        /// Resets the TextBoxLoginEmail and
+        /// TextBoxLoginPassword fields into there default values
+        /// </summary>
         private void resetLogin()
         {
             TextBoxLoginEmail.Text = "Email (email@example.com)";
@@ -80,7 +105,19 @@ namespace ArtemisDesktopClient
             TextBoxLoginPassword.ForeColor = Color.Gray;
         }
 
-        /* This will return the same as the Post call and redirect to the new form*/
+        /// <summary>
+        /// OnClick Listener for the CreateAccountButton
+        /// Makes a PUT request to the server with the information
+        /// entered into the TextBoxes
+        /// </summary>
+        /// <remarks>
+        /// I NEED TO ADD MORE ERROR CHECKING INTO THIS
+        /// </remarks>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private async void CreateAccountButton_Click(object sender, EventArgs e)
         {
             UserAccount CreateInfo = new UserAccount();
@@ -110,26 +147,61 @@ namespace ArtemisDesktopClient
             }
         }
         
-        /*Buttons that dont Communicate with the server*/
+        /// <summary>
+        /// Will change the panel on the front on the screen
+        /// to PanelCreateAccount
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void CreatePanelSwitchButton_Click(object sender, EventArgs e)
         {
             PanelLogin.Visible = false;
             PanelCreateAccount.Visible = true;
         }
 
+        /// <summary>
+        /// Will change the panel on the front on the screen
+        /// to PanelLogin
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void SwitchToLoginPanel_Click(object sender, EventArgs e)
         {
             PanelLogin.Visible = true;
             PanelCreateAccount.Visible = false;
         }
 
-        //For moving the background by touching it
+        /// <summary>
+        /// OnClick Listener for mousedown
+        /// Is used with BackGroundMouseMove and BackGroundMouseUp to move the screen around
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void BackGroundMouseDown(object sender, MouseEventArgs e)
         {
             mouseDown = true;
             lastLocation = e.Location;
         }
 
+        /// <summary>
+        /// OnClick Listener for MouseMove
+        /// this will redraw the form when the mouse is moved to a new location
+        /// if mouseDown is set to true
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void BackGroundMouseMove(object sender, MouseEventArgs e)
         {
             if (mouseDown)
@@ -141,12 +213,28 @@ namespace ArtemisDesktopClient
             }
         }
 
+        /// <summary>
+        /// OnClick Listener for MouseUp
+        /// Is used with BackGroundMouseMove and BackGroundMouseDown to move the screen around
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void BackGroundMouseUp(object sender, MouseEventArgs e)
         {
             mouseDown = false;
         }
 
-        /*Putting in default values into textboxes that empty and refill as nesscarry*/
+        /// <summary>
+        /// This will clear the textbox of any default text and
+        /// change the font color to black
+        /// </summary>
+        /// <param name="sender">The textBox that the user click on</param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// </returns>
         private void TextBoxClick(object sender, EventArgs e)
         {
             if (((TextBox)sender).ForeColor != Color.Gray)
@@ -172,6 +260,15 @@ namespace ArtemisDesktopClient
             return;
         }
         
+        /// <summary>
+        /// LostFocus EventHandler.
+        /// If the textBox is empty when it loses focus it will restore it to default text.
+        /// </summary>
+        /// <param name="sender">The textBox that loses focus</param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void ResetTextBox(object sender, EventArgs e)
         {
             if (((TextBox)sender).Text != String.Empty)
@@ -213,6 +310,15 @@ namespace ArtemisDesktopClient
             }
         }
 
+        /// <summary>
+        /// DownClick Eventhandler for all buttons.
+        /// When a button is clicked it will show an alternate version.
+        /// </summary>
+        /// <param name="sender">The Button that is being Clicked</param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void ButtonDownClick(object sender, EventArgs e)
         {
             string ButtonName = ((Button)sender).Name;
@@ -227,6 +333,16 @@ namespace ArtemisDesktopClient
             }
 
         }
+
+        /// <summary>
+        /// ClickRelease Eventhandler for all imagebuttons.
+        /// When the button is release the original image will be restored.
+        /// </summary>
+        /// <param name="sender">button being released</param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void ButtonRelease(object sender, EventArgs e)
         {
             string ButtonName = ((Button)sender).Name;
@@ -246,12 +362,23 @@ namespace ArtemisDesktopClient
             }
         }
 
+        /// <summary>
+        /// TextChanged Eventhandler for the TextBoxCreatePassword and TextBoxConfirmPassword
+        /// if TextBoxCreatePassword will check if the password is valid
+        /// if TextBoxConfirmPassword will check if the two password boxes are the same
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void TextBoxTextChanged(object sender, EventArgs e)
         {
             string TextBoxName = ((TextBox)sender).Name;
 
             switch (TextBoxName) {
                 case "TextBoxCreatePassword":
+                    //this is ugly
                     if (!Regex.IsMatch(TextBoxCreatePassword.Text, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,32}$"))
                     {
                         TextBoxCreatePassword.BackColor = Color.FromArgb(255, 128, 128);
