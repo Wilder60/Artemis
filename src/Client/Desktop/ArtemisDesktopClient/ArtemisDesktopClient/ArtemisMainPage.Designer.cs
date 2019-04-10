@@ -43,11 +43,11 @@
             this.PanelKeyHook = new System.Windows.Forms.Panel();
             this.ButtonCreateNewPassword = new System.Windows.Forms.Button();
             this.LabelKeyHookDescription = new System.Windows.Forms.Label();
-            this.PanelDynamicKeyHook = new System.Windows.Forms.Panel();
             this.ButtonDeleteKeys = new System.Windows.Forms.Button();
             this.ButtonResetKeys = new System.Windows.Forms.Button();
             this.ButtonCopyKeys = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.PanelDynamicKeyHook = new System.Windows.Forms.Panel();
             this.PanelAccountSettings = new System.Windows.Forms.Panel();
             this.LabelDeleteWarning = new System.Windows.Forms.Label();
             this.ButtonSaveChanges = new System.Windows.Forms.Button();
@@ -264,15 +264,6 @@
             this.LabelKeyHookDescription.TabIndex = 6;
             this.LabelKeyHookDescription.Text = "Fast, Secure, Password storage";
             // 
-            // PanelDynamicKeyHook
-            // 
-            this.PanelDynamicKeyHook.AutoScroll = true;
-            this.PanelDynamicKeyHook.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.PanelDynamicKeyHook.Location = new System.Drawing.Point(275, 75);
-            this.PanelDynamicKeyHook.Name = "PanelDynamicKeyHook";
-            this.PanelDynamicKeyHook.Size = new System.Drawing.Size(875, 725);
-            this.PanelDynamicKeyHook.TabIndex = 5;
-            // 
             // ButtonDeleteKeys
             // 
             this.ButtonDeleteKeys.Location = new System.Drawing.Point(25, 330);
@@ -281,6 +272,7 @@
             this.ButtonDeleteKeys.TabIndex = 4;
             this.ButtonDeleteKeys.Text = "Delete";
             this.ButtonDeleteKeys.UseVisualStyleBackColor = true;
+            this.ButtonDeleteKeys.Click += new System.EventHandler(this.DeleteKeys);
             // 
             // ButtonResetKeys
             // 
@@ -310,6 +302,15 @@
             this.label1.Size = new System.Drawing.Size(132, 39);
             this.label1.TabIndex = 1;
             this.label1.Text = "KeyHook";
+            // 
+            // PanelDynamicKeyHook
+            // 
+            this.PanelDynamicKeyHook.AutoScroll = true;
+            this.PanelDynamicKeyHook.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.PanelDynamicKeyHook.Location = new System.Drawing.Point(275, 75);
+            this.PanelDynamicKeyHook.Name = "PanelDynamicKeyHook";
+            this.PanelDynamicKeyHook.Size = new System.Drawing.Size(875, 725);
+            this.PanelDynamicKeyHook.TabIndex = 5;
             // 
             // PanelAccountSettings
             // 
@@ -547,10 +548,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(1300, 800);
-            this.Controls.Add(this.PanelArtemisVoice);
-            this.Controls.Add(this.PanelAccountSettings);
             this.Controls.Add(this.PanelKeyHook);
             this.Controls.Add(this.PanelSideMenu);
+            this.Controls.Add(this.PanelArtemisVoice);
+            this.Controls.Add(this.PanelAccountSettings);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ArtemisMainPage";
             this.Text = "ArtemisMainPage";

@@ -18,7 +18,11 @@ import (
 	DELETE -> Removes an event an closes the channel
 */
 
-//SetCalenderRoutes Sets the routes for the calender
+//SetCalenderRoutes sets the handler functions for the /Calender route.
+//Parameters:
+//		router -> pointer to a mux.Router
+//Returns:
+//		The router passed in as a parameter
 func SetCalenderRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/Calender", createEvent).Methods("POST")
 	router.HandleFunc("/Calender", getUpcomingEvents).Methods("GET")
@@ -27,7 +31,13 @@ func SetCalenderRoutes(router *mux.Router) *mux.Router {
 	return router
 }
 
-//createEvent
+//createEvent is the function that handles all the POST requests for the /Calender route.
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user
+//Returns:
+//		202 if the calender was accepted and stored
+//		if errors occured 500, 400
 func createEvent(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	//this the person making the request valid
@@ -60,6 +70,14 @@ func createEvent(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
+//validateLogin is the function that handles all the POST requests for the /Auth route.
+//Will query the database to see if the email exists and use bcrypt to compare the two passwords.
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user
+//Returns:
+//		if a succesful login will return 200 and a Token
+//		if not then 404, or 500
 func getUpcomingEvents(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
@@ -89,6 +107,14 @@ func getUpcomingEvents(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
+//validateLogin is the function that handles all the POST requests for the /Auth route.
+//Will query the database to see if the email exists and use bcrypt to compare the two passwords.
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user
+//Returns:
+//		if a succesful login will return 200 and a Token
+//		if not then 404, or 500
 func updateEvent(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
@@ -119,7 +145,14 @@ func updateEvent(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
-//removeEvent
+//validateLogin is the function that handles all the POST requests for the /Auth route.
+//Will query the database to see if the email exists and use bcrypt to compare the two passwords.
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user
+//Returns:
+//		if a succesful login will return 200 and a Token
+//		if not then 404, or 500
 func removeEvent(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
@@ -149,7 +182,14 @@ func removeEvent(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
-//------------------------------UTILITY FUNCTIONS----------------------------//
+//validateLogin is the function that handles all the POST requests for the /Auth route.
+//Will query the database to see if the email exists and use bcrypt to compare the two passwords.
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user
+//Returns:
+//		if a succesful login will return 200 and a Token
+//		if not then 404, or 500
 func parseCalenderRequest(Request *http.Request) (calender.EventInfo, error) {
 	NewEvent := calender.EventInfo{}
 	err := json.NewDecoder(Request.Body).Decode(&NewEvent)

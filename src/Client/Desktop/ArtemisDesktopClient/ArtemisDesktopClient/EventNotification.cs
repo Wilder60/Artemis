@@ -12,6 +12,10 @@ using System.Web.Script.Serialization;
 
 namespace ArtemisDesktopClient
 {
+    /// <summary>
+    /// Class for the EventNotification Form
+    /// This will appear everytime any data it received from the server
+    /// </summary>
     public partial class EventNotification : Form
     {
         private IEnumerable<string> AuthToken;

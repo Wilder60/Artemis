@@ -89,7 +89,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(58)))), ((int)(((byte)(58)))));
-            this.ClientSize = new System.Drawing.Size(494, 236);
+            this.ClientSize = new System.Drawing.Size(500, 250);
             this.Controls.Add(this.LabelError);
             this.Controls.Add(this.ButtonAccept);
             this.Controls.Add(this.ButtonCancel);

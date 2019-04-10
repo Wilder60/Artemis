@@ -25,10 +25,14 @@ import (
 	DELETE -> To remove a user from the database (and cancel all there active alarms)
 */
 
-//DBClient connection to the the mongo connect that will be connected in main
+//DBClient is a pointer to a mongo.Client struct for connection to the database
 var DBClient *mongo.Client
 
-//SetAuthRoutes Setting the Routes for the router
+//SetAuthRoutes sets the handler functions for the /Auth route.
+//Parameters:
+//		router -> pointer to a mux.Router
+//Returns:
+//		The router passed in as a parameter
 func SetAuthRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/Auth", validateLogin).Methods("POST")
 	router.HandleFunc("/Auth", createUser).Methods("PUT")
@@ -37,7 +41,14 @@ func SetAuthRoutes(router *mux.Router) *mux.Router {
 	return router
 }
 
-//-----------------------------For Login Route-------------------------------//
+//validateLogin is the function that handles all the POST requests for the /Auth route.
+//Will query the database to see if the email exists and use bcrypt to compare the two passwords.
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user
+//Returns:
+//		if a succesful login will return 200 and a Token
+//		if not then 404, or 500
 func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	AccountsCollection := DBClient.Database("db").Collection("Accounts")
@@ -92,7 +103,15 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
-//--------------------------FOR THE SIGNUP ROUTjE-----------------------------//
+//createUser is the function that handles all the GET requests for the /Auth route.
+//Will query the database to see if an account already exists and returns if it does,
+//else it will hash the password and store the struct in the database
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user
+//Returns:
+//		202 Accepted if the account could be created
+//		404 if an account already exists, 500 if an error occured
 func createUser(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	AccConnection := DBClient.Database("db").Collection("Accounts")
@@ -159,6 +178,14 @@ func updateUser(Writer http.ResponseWriter, Request *http.Request) {
 
 }
 
+//deleteUser is the function that handles all the DELETE requests for the /Auth route.
+//Will query the database for an account with a matching id and remove it from the database
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user
+//Returns:
+//		202 Accepted if the account could be created
+//		404 if an account already exists, 500 if an error occured
 func deleteUser(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	err := jwt.ValidateToken(Request.Header["Authorization"][0])
@@ -192,6 +219,12 @@ func deleteUser(Writer http.ResponseWriter, Request *http.Request) {
 
 }
 
+//parseAuthRequest parses the http.Request
+//Parameters:
+//		Request -> the request that was sent by the user contain the account in the body
+//Returns:
+//		An instance of account.Account and nil if not errors happen
+//		Else an empty account.Account and the error
 func parseAuthRequest(Request *http.Request) (account.Account, error) {
 	NewAccount := account.Account{}
 	err := json.NewDecoder(Request.Body).Decode(&NewAccount)

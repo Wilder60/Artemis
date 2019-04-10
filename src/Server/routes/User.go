@@ -15,16 +15,30 @@ import (
 	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
-//UDBClient stuff
+//UDBClient is a pointer to a mongodb client object
 var UDBClient *mongo.Client
 
-//SetUserRoutes sets routes
+//SetUserRoutes sets the handler functions for the /User route.
+//Only Get and Detele are implented
+//Parameters:
+//		router -> pointer to a mux.Router
+//Returns:
+//		The router passed in as a parameter
 func SetUserRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/User", getAllActiveAlarms).Methods("GET")
 	router.HandleFunc("/User", deletePastAlarm).Methods("DELETE")
 	return router
 }
 
+//getAllActiveAlarms is the function to handle GET requests.
+//Authenticates the user then parses the URL for there ID and
+//quieries the database for all timer for them that have went off.
+//Parameters:
+//		Writer -> An http.ResponseWriter to return the information
+//		Request -> The http Request from the user contain the ID in the url
+//Returns:
+//		If everything was successful and array of eventinfos and 200
+//		If errors ocurred: 401, 400, or 500
 func getAllActiveAlarms(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	err := jwt.ValidateToken(Request.Header["Authorization"][0])
@@ -69,6 +83,15 @@ func getAllActiveAlarms(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
+//deletePastAlarm is the function to handle DELETE requests.
+//Authenticates the user and parses the body of the request for
+//the IDs of the Alarms to remove
+//Parameters:
+//		Writer -> An http.ResponseWriter to return the information
+//		Request -> The http Request from the user contain the IDs of the Alarms in the body
+//Returns:
+//		If everything was successful 200
+//		If errors ocurred: 401, or 500
 func deletePastAlarm(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	err := jwt.ValidateToken(Request.Header["Authorization"][0])
