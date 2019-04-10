@@ -11,16 +11,38 @@ using System.Drawing;
 
 namespace ArtemisDesktopClient
 {
+    /// <summary>
+    /// The partial part of the ArtemisMainPage that deals with the functionallity
+    /// of the KeyHook panel
+    /// </summary>
     public partial class ArtemisMainPage
     {
-
+        /// <value>The dictionary that is deserialized from the get request</value>
         private Dictionary<string, string> KeysDic;
+        /// <summary>
+        /// This button brings up the side menu that will let the user switch between panels
+        /// </summary>
+        /// <param name="sender">The object that was clicked</param>
+        /// <param name="e">Any Event Arguments</param>
+        /// <returns>
+        /// void
+        /// </returns>
         partial void button3_Click(object sender, EventArgs e)
         {
             PanelControl["SideMenu"].Show();
             PanelControl["SideMenu"].BringToFront();
         }
 
+        /// <summary>
+        /// Clears the keyhook panel of all Contents, querries the database
+        /// and rebuilds the information on the page
+        /// </summary>
+        /// <remarks>
+        /// This is all messed up right now, I know I can do this better
+        /// </remarks>
+        /// <returns>
+        /// void
+        /// </returns>
         private async void refreshKeyHookpage()
         {
             RemoveElements();
@@ -79,6 +101,15 @@ namespace ArtemisDesktopClient
 
         }
 
+        /// <summary>
+        /// Will querry the database for all the keys and passwords for the user
+        /// </summary>
+        /// <remarks>
+        /// I think I can refactor this into something that looks nicer
+        /// </remarks>
+        /// <returns>
+        /// Dictionary containing all the keys and there passwords
+        /// </returns>
         private async Task<Dictionary<string, string>> GetKeys()
         {
             try
@@ -104,6 +135,14 @@ namespace ArtemisDesktopClient
             }
         }
 
+        /// <summary>
+        /// This button will create a new AddKeyHookPage form an wait for the result of the form
+        /// </summary>
+        /// <param name="sender">The object that was clicked</param>
+        /// <param name="e">Any Event Arguments</param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void ButtonCreateNewPassword_Click(object sender, EventArgs e)
         {
             AddKeyHookPage WebsiteInput = new AddKeyHookPage(_Account.id, _AuthToken);
@@ -111,6 +150,15 @@ namespace ArtemisDesktopClient
             refreshKeyHookpage();
         }
 
+        /// <summary>
+        /// This will select all the highlighted labels and
+        /// will serial them and make a DELETE request to the KeyHook routes
+        /// </summary>
+        /// <param name="sender">The object that was clicked</param>
+        /// <param name="e">Any Event Arguments</param>
+        /// <returns>
+        /// void
+        /// </returns>
         private async void DeleteKeys(object sender, EventArgs e)
         {
             List<string> KeysToRemove = new List<string>();
@@ -148,6 +196,12 @@ namespace ArtemisDesktopClient
             }
         }
 
+        /// <summary>
+        /// Will select all the Control objects and remove them
+        /// </summary>
+        /// <returns>
+        /// void
+        /// </returns>
         private void RemoveElements()
         {
             foreach (Control item in PanelDynamicKeyHook.Controls)
@@ -157,6 +211,14 @@ namespace ArtemisDesktopClient
             }
         }
 
+        /// <summary>
+        /// When a label is click, it will either highlight or dehighlight the label
+        /// </summary>
+        /// <param name="sender">The object that was clicked</param>
+        /// <param name="e">Any Event Arguments</param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void SelectLabel(object sender, EventArgs e)
         {
             Label temp = (Label)sender;
@@ -170,6 +232,16 @@ namespace ArtemisDesktopClient
             }
         }
 
+        /// <summary>
+        /// When a button is clicked the Label containing the password will have its visible 
+        /// setting set to true of false
+        /// </summary>
+        /// <param name="sender">The object that sends this request</param>
+        /// <param name="e">The arguments</param>
+        /// <param name="ValueLabel">The label that button acts on</param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void ShowPassword(object sender, EventArgs e, Label ValueLabel)
         {
             if (ValueLabel.Visible == true)
