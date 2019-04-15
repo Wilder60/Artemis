@@ -49,6 +49,7 @@ namespace ArtemisDesktopClient
             startlistening();
         }
 
+        //These are heads that are required to use
         partial void ButtonArtemisClick(object sender, EventArgs e);
         partial void Button2Click(object sender, EventArgs e);
         partial void button3_Click(object sender, EventArgs e);
@@ -94,6 +95,12 @@ namespace ArtemisDesktopClient
             mouseDown = false;
         }
 
+        /// <summary>
+        /// Depending on the time of day, the label will give a different greating
+        /// </summary>
+        /// <returns>
+        /// void
+        /// </returns>
         public void Panelinit()
         {
             LabelGreating.Text = "";
@@ -124,6 +131,13 @@ namespace ArtemisDesktopClient
             PanelControl["SideMenu"].BringToFront();
         }
 
+        /// <summary>
+        /// This function will spin a new thread that will make GET requests every 1
+        /// second to check to see if the server has an alarm for the user
+        /// </summary>
+        /// <returns>
+        /// void
+        /// </returns>
         private void startlistening()
         {
             Run = true;
@@ -150,7 +164,7 @@ namespace ArtemisDesktopClient
                         }
                         
                     }
-                    Thread.Sleep(10000);
+                    Thread.Sleep(1000);
                 }
             });
             thread.Start();

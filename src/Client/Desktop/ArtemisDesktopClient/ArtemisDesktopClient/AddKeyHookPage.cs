@@ -12,6 +12,12 @@ using System.Web.Script.Serialization;
 
 namespace ArtemisDesktopClient
 {
+    /// <summary>
+    /// The class for the AddKeyHookPage form
+    /// </summary>
+    /// <remarks>
+    /// The form is displayed whenever the user wants to add a new key
+    /// </remarks>
     public partial class AddKeyHookPage : Form
     {
         private string website { get; set; }
@@ -19,6 +25,11 @@ namespace ArtemisDesktopClient
         private IEnumerable<string> AuthToken { get; set; }
         private HttpClient client;
 
+        /// <summary>
+        /// The Constructor for the form
+        /// </summary>
+        /// <param name="AccountID">The ID of the user who opened the form</param>
+        /// <param name="Token">The users Auth Token</param>
         public AddKeyHookPage(string AccountID, IEnumerable<string> Token)
         {
             InitializeComponent();
@@ -27,6 +38,12 @@ namespace ArtemisDesktopClient
             client = new HttpClient();
         }
 
+        /// <summary>
+        /// Click Eventhandler for the ButtonAccept Button
+        /// Makes a POST request to the server
+        /// </summary>
+        /// <param name="sender">the button that is being clicked</param>
+        /// <param name="e">The event args</param>
         private async void ButtonAccept_Click(object sender, EventArgs e)
         {
             if (!IsValidWebsite())
@@ -65,6 +82,13 @@ namespace ArtemisDesktopClient
 
         }
 
+        /// <summary>
+        /// Checks to see if the website name being passed in is valid or not
+        /// </summary>
+        /// <returns>
+        /// true if the name is valid
+        /// false if the Text is empty or all spaces
+        /// </returns>
         private bool IsValidWebsite()
         {
             website = TextBoxWebsite.Text;
@@ -82,6 +106,12 @@ namespace ArtemisDesktopClient
             return true;
         }
 
+        /// <summary>
+        /// The Click EventHandler for the ButtonCancel Button
+        /// This will close the form without sending a request to the server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;

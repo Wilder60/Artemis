@@ -21,13 +21,19 @@ namespace ArtemisDesktopClient
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        /// 
         partial void button4_Click(object sender, EventArgs e)
         {
             this.PanelControl["SideMenu"].Show();
             this.PanelControl["SideMenu"].BringToFront();
         }
 
+        /// <summary>
+        /// This will run whenever whenever the panel is brought to the front
+        /// or if the account details are saved
+        /// </summary>
+        /// <returns>
+        /// void
+        /// </returns>
         public void Settingsinit()
         {
             CanDelete = false;
@@ -47,6 +53,16 @@ namespace ArtemisDesktopClient
 
         }
 
+        /// <summary>
+        /// Click EventHandler for the ButtonDeleteAccount Button
+        /// Will make a DELETE request to the server with the user Account id
+        /// and close the ArtemisMainPage form
+        /// </summary>
+        /// <param name="sender">The button being clicked</param>
+        /// <param name="e">The EventArguments</param>
+        /// <returns>
+        /// void
+        /// </returns>
         private async void ButtonDeleteAccount_Click(object sender, EventArgs e)
         {
             if (!CanDelete)

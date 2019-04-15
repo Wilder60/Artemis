@@ -84,7 +84,7 @@ func GetAllkeys(AccountID string) []byte {
 }
 
 //ModifyExistingKey Will change a password for website
-func ModifyExistingKey(AccountID, WebsiteName string) error {
+func ModifyExistingKey(AccountID string, Websites []string) error {
 	keysCollection := DBClient.Database("db").Collection("Keys")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -93,12 +93,25 @@ func ModifyExistingKey(AccountID, WebsiteName string) error {
 	if DecodeErr != nil {
 		return DecodeErr
 	}
-	_, ok := UserAccount.Keys[WebsiteName]
-	if ok != true {
-		return errors.New("No Website Exists")
+
+	for _, Website := range Websites {
+		_, ok := UserAccount.Keys[Website]
+		if ok != true {
+			return errors.New(Website + " Does not exist")
+		}
+		NewPass := generateNewPassword()
+		UserAccount.Keys[Website] = NewPass
 	}
-	UserAccount.Keys[WebsiteName] = generateNewPassword()
-	_, err := keysCollection.UpdateOne(ctx, bson.M{"id": AccountID}, UserAccount)
+
+	_, err := keysCollection.UpdateOne(ctx,
+		bson.D{
+			bson.E{Key: "id", Value: AccountID}},
+		bson.D{
+			bson.E{Key: "$set", Value: bson.D{
+				bson.E{Key: "keys", Value: UserAccount.Keys},
+			}}},
+	)
+
 	if err != nil {
 		return err
 	}

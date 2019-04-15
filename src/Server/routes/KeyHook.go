@@ -107,7 +107,7 @@ func modifyKey(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 
-	err = keyhook.ModifyExistingKey(RequestLogin.ID, RequestLogin.Website)
+	err = keyhook.ModifyExistingKey(RequestLogin.ID, RequestLogin.WebsiteArray)
 	if err != nil {
 		Writer.WriteHeader(http.StatusNotFound)
 		return

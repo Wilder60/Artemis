@@ -282,6 +282,7 @@
             this.ButtonResetKeys.TabIndex = 3;
             this.ButtonResetKeys.Text = "Reset Password";
             this.ButtonResetKeys.UseVisualStyleBackColor = true;
+            this.ButtonResetKeys.Click += new System.EventHandler(this.UpdateKeys);
             // 
             // ButtonCopyKeys
             // 
@@ -291,6 +292,7 @@
             this.ButtonCopyKeys.TabIndex = 2;
             this.ButtonCopyKeys.Text = "Copy";
             this.ButtonCopyKeys.UseVisualStyleBackColor = true;
+            this.ButtonCopyKeys.Click += new System.EventHandler(this.CopyList);
             // 
             // label1
             // 
