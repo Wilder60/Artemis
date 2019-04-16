@@ -11,7 +11,7 @@ import (
 	"github.com/rs/xid"
 )
 
-//EventInfo Structure of the event data
+//EventInfo Contains all the information that an event needs
 type EventInfo struct {
 	EventID       string `json:"eventid,omitempty"`       //The eventname of the id
 	EventOwner    string `json:"eventowner,omitempty"`    //The id of the user that owns the alarm
@@ -26,10 +26,18 @@ type EventInfo struct {
 
 //DBClient connection to the mongodb database
 var DBClient *mongo.Client
+
+//mongo.Collection is a pointer to the Calender Collection
 var calenderCollection *mongo.Collection
+
+//The channel for closing the running go routine
 var closingChanel chan string
 
-//InsertEvent Inserting an event into the database for storage
+//InsertEvent Inserting a new EventInfo into the database
+//Parameters:
+//		NewEvent -> An EventInfo struct containing the event information
+//Returns:
+//		err if the insertion fails else nil
 func InsertEvent(NewEvent EventInfo) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -46,7 +54,12 @@ func InsertEvent(NewEvent EventInfo) error {
 	return nil
 }
 
-//GetEvents Gets all of the events upto one month in advance
+//GetEvents Gets all the Events for a specific owner within one month
+//Parameters:
+//		GetRequest -> the EventInfo containing userID
+//Returns:
+//		nil and err if Find query fails else
+//		an array containing all struct and nil
 func GetEvents(GetRequest EventInfo) ([]EventInfo, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	cancel()
@@ -84,7 +97,12 @@ func EditEvent(UpdateEvent EventInfo) error {
 	return nil
 }
 
-//RemoveEvent Removes a event from a database, stops the goroutine, and closes the channels
+//RemoveEvent Removes the event with the matching ID
+//Parameters:
+//		RemoveEvent -> The EventInfo struct containing the ID
+//Returns:
+//		nil if there is no error
+//		else the error
 func RemoveEvent(RemoveEvent EventInfo) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -100,7 +118,13 @@ func RemoveEvent(RemoveEvent EventInfo) error {
 	return nil
 }
 
-//StartUpCalender stuff
+//StartUpCalender The start up function that makes a connection
+//to the Calender Collection, and make a channel to quit the go routine
+//and starts the go routine
+//Parameters:
+//		none
+//Returns:
+//		none
 func StartUpCalender() {
 	fmt.Fprintf(os.Stdout, "Starting Calender\n")
 	calenderCollection = DBClient.Database("db").Collection("Calender")
@@ -108,6 +132,12 @@ func StartUpCalender() {
 	go checkAlarms(closingChanel)
 }
 
+//checkAlarms Will query the database for all documents that have
+//there notifytime as being after or equal the time now
+//Parameters:
+//		QuitChannel -> the channel that will send the quit message
+//Returns:
+//		None
 func checkAlarms(QuitChannel chan string) {
 	for true {
 		select {
@@ -132,7 +162,11 @@ func checkAlarms(QuitChannel chan string) {
 	fmt.Fprintf(os.Stdout, "checker shutting down\n")
 }
 
-//ShutDownCalender stuff
+//ShutDownCalender stops the GoRoutine and closes the channel
+//Parameters:
+//		none
+//Returns:
+//		none
 func ShutDownCalender() {
 	closingChanel <- "quit"
 	close(closingChanel)

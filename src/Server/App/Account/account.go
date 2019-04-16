@@ -1,6 +1,6 @@
 package account
 
-//Account that the user will have
+//Account will contain all the information for a user Account
 type Account struct {
 	ID        string `json:"id,omitempty"`
 	Email     string `json:"email,omitempty"`
@@ -21,7 +21,11 @@ type EditAccount struct {
 	UpdatedPassword string `json:"updatedpassword,omitempty"`
 }
 
-//ConvertToAccount converts a EditAccount struct to an Account struct
+//ConvertToAccount will convert a EditAccount struct into a Account
+//Parameters:
+//		UpdateAccount -> The EditAccount to be converted to an Account
+//Returns:
+//		Account struct containing the updated information
 func ConvertToAccount(UpdateAccount EditAccount) Account {
 	newAccount := Account{}
 	newAccount.ID = UpdateAccount.ID

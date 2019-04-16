@@ -15,6 +15,12 @@ import (
 )
 
 //HealthCheck function used just to check if the server is running
+//This will take a GET request
+//Parameters:
+//		Writer -> The response writer for the http.ResponseWriter
+//		Reader -> The http request from the client
+//Returns:
+//		The Text "The server is up and running" and a http Status 200
 func HealthCheck(Writer http.ResponseWriter, Reader *http.Request) {
 	fmt.Printf("GET\t/\t200")
 	fmt.Fprintf(Writer, "The server is up and running")
@@ -22,7 +28,11 @@ func HealthCheck(Writer http.ResponseWriter, Reader *http.Request) {
 	return
 }
 
-//CreateDatabaseConnection Connects the database to the different files
+//CreateDatabaseConnection Creates the connection to the database client
+//Parameters:
+//		none
+//Returns:
+//		A *mongo.Client connection
 func CreateDatabaseConnection() *mongo.Client {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -33,7 +43,13 @@ func CreateDatabaseConnection() *mongo.Client {
 	return client
 }
 
-//main function that will boot the server
+//The main function of the server
+//Will initialize all the database collections of the routes
+//and set the Handler functions for each route
+//Parameters:
+//		none
+//Returns:
+//		none
 func main() {
 	router := mux.NewRouter()
 	DBConnection := CreateDatabaseConnection()

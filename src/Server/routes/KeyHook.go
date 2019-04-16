@@ -23,7 +23,7 @@ type keyHookRequest struct {
 SetKeyHookRoutes Setting the functions for the KeyHook routes
 	POST	-> Add a key for a user
 	GET		-> Get all the keys for a single user
-	PUT	-> Update one of the Keys (KeyName or KeyPass)
+	PUT		-> Update one of the Keys (KeyName or KeyPass)
 	DELETE 	-> Remove a Key from a user list
 */
 func SetKeyHookRoutes(router *mux.Router) *mux.Router {
@@ -34,7 +34,17 @@ func SetKeyHookRoutes(router *mux.Router) *mux.Router {
 	return router
 }
 
-//Adds a key to the appropiate account
+//addKeys the HandleFunc for the POST request of the Keyhook Route
+//Adds a new Website name and generates a new password for it
+//Will make a call App/KeyHook file
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user containing the userID
+//			and the website to parse
+//Returns:
+//		http status 401 if there is no or an invalid token is present
+//		http status 500 if an error happens during the parsing or inserting
+//		http status 200 if the key was successfully inserted
 func addKey(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	err := jwt.ValidateToken(Request.Header["Authorization"][0])
@@ -69,6 +79,16 @@ func addKey(Writer http.ResponseWriter, Request *http.Request) {
 
 }
 
+//getKeys The Handlefunc for the GET request of the KeyHook route
+//That will return all keys for a specifc user
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user containing the userID
+//				in the URL
+//Returns:
+//		http status 401 if there is no or invalid token
+//		http status 400 if the user id is not provided in the URL
+//		http status 200 and a json containing all of the passwords and keys
 func getKeys(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	err := jwt.ValidateToken(Request.Header["Authorization"][0])
@@ -91,6 +111,17 @@ func getKeys(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
+//modifyKey The Handlefunc for the PUT request of the KeyHook route
+//This function will generate a new password for all of websites that are
+//passed to it in the request
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user containing the userID
+//			and an array containing all of the websites
+//Returns:
+//		http status 401 if there is no or invalid token
+//		http status 500 if an error happens during the modiying
+//		http status 200
 func modifyKey(Writer http.ResponseWriter, Request *http.Request) {
 	defer Request.Body.Close()
 	err := jwt.ValidateToken(Request.Header["Authorization"][0])
@@ -116,6 +147,15 @@ func modifyKey(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
+//removeKeys The Handlefunc for the DELETE request of the KeyHook route
+//This will delete all the keys and passwords for the given Website Names
+//Parameters:
+//		Writer -> a http.ResponseWriter to return if the user is valid or not
+//		Request -> the request that was sent by the user containing the
+//Returns:
+//		http status 401 if there is no or invalid token
+//		http status 500 if there is an error in the deleting
+//		http status 200
 func removeKey(Writer http.ResponseWriter, Request *http.Request) {
 	err := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
@@ -135,6 +175,14 @@ func removeKey(Writer http.ResponseWriter, Request *http.Request) {
 	return
 }
 
+//getKeys The Handlefunc for the GET request of the KeyHook route
+//That will return all keys for a specifc user
+//Parameters:
+//		Request -> the http request containing the information to be
+//			decoded into a keyHookRequest struct
+//Returns:
+//		if error decoding an empty object and the error
+//		else the decoded struct and nil
 func parseKeyHookRequest(Request *http.Request) (keyHookRequest, error) {
 	NewRequest := keyHookRequest{}
 	err := json.NewDecoder(Request.Body).Decode(&NewRequest)
