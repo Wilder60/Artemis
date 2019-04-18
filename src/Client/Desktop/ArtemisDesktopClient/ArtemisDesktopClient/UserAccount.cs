@@ -8,10 +8,6 @@ namespace ArtemisDesktopClient
 {
     public class UserAccount
     {
-        public UserAccount()
-        {
-        }
-        
         public string id { get; set; }
         public string email { get; set; }
         public string password { get; set; }
@@ -19,5 +15,22 @@ namespace ArtemisDesktopClient
         public string firstname { get; set; }
         public string lastname { get; set; }
         public string updatepassword { get; set; }
+
+        public UserAccount()
+        {
+
+        }
+
+        public UserAccount(UserAccount account)
+        {
+            id = account.id;
+            email = account.email;
+            password = account.password;
+            pageStyle = account.pageStyle;
+            firstname = account.firstname;
+            lastname = account.lastname;
+            updatepassword = null;
+        }
+
     }
 }

@@ -50,30 +50,30 @@
             this.PanelDynamicKeyHook = new System.Windows.Forms.Panel();
             this.PanelAccountSettings = new System.Windows.Forms.Panel();
             this.LabelDeleteWarning = new System.Windows.Forms.Label();
-            this.ButtonSaveChanges = new System.Windows.Forms.Button();
+            this.ButtonUpdateProfile = new System.Windows.Forms.Button();
             this.ButtonDeleteAccount = new System.Windows.Forms.Button();
             this.LabelLastname = new System.Windows.Forms.Label();
             this.TextBoxLastname = new System.Windows.Forms.TextBox();
             this.TextBoxFirstname = new System.Windows.Forms.TextBox();
             this.LabelFirstName = new System.Windows.Forms.Label();
             this.LabelOldPassword = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.TextBoxOldPassword = new System.Windows.Forms.TextBox();
             this.LabelConfirmPassword = new System.Windows.Forms.Label();
             this.LabelNewPassword = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.RadioButtonFunctional = new System.Windows.Forms.RadioButton();
             this.RadioButtonModern = new System.Windows.Forms.RadioButton();
             this.SettingEmailLabel = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.TextBoxNewPasswordConfirm = new System.Windows.Forms.TextBox();
+            this.TextBoxNewPassword = new System.Windows.Forms.TextBox();
             this.TextBoxEmail = new System.Windows.Forms.TextBox();
             this.LabelAccountTitle = new System.Windows.Forms.Label();
             this.ButtonAccountShowMenu = new System.Windows.Forms.Button();
             this.PanelArtemisCalender = new System.Windows.Forms.Panel();
+            this.ButtonNewEvent = new System.Windows.Forms.Button();
+            this.PanelDynamicCalender = new System.Windows.Forms.Panel();
             this.LabelCalender = new System.Windows.Forms.Label();
             this.ButtonCalenderSidePanel = new System.Windows.Forms.Button();
-            this.PanelDynamicCalender = new System.Windows.Forms.Panel();
-            this.ButtonNewEvent = new System.Windows.Forms.Button();
             this.PanelArtemisVoice.SuspendLayout();
             this.PanelSideMenu.SuspendLayout();
             this.PanelKeyHook.SuspendLayout();
@@ -325,22 +325,22 @@
             // 
             this.PanelAccountSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.PanelAccountSettings.Controls.Add(this.LabelDeleteWarning);
-            this.PanelAccountSettings.Controls.Add(this.ButtonSaveChanges);
+            this.PanelAccountSettings.Controls.Add(this.ButtonUpdateProfile);
             this.PanelAccountSettings.Controls.Add(this.ButtonDeleteAccount);
             this.PanelAccountSettings.Controls.Add(this.LabelLastname);
             this.PanelAccountSettings.Controls.Add(this.TextBoxLastname);
             this.PanelAccountSettings.Controls.Add(this.TextBoxFirstname);
             this.PanelAccountSettings.Controls.Add(this.LabelFirstName);
             this.PanelAccountSettings.Controls.Add(this.LabelOldPassword);
-            this.PanelAccountSettings.Controls.Add(this.textBox4);
+            this.PanelAccountSettings.Controls.Add(this.TextBoxOldPassword);
             this.PanelAccountSettings.Controls.Add(this.LabelConfirmPassword);
             this.PanelAccountSettings.Controls.Add(this.LabelNewPassword);
             this.PanelAccountSettings.Controls.Add(this.label3);
             this.PanelAccountSettings.Controls.Add(this.RadioButtonFunctional);
             this.PanelAccountSettings.Controls.Add(this.RadioButtonModern);
             this.PanelAccountSettings.Controls.Add(this.SettingEmailLabel);
-            this.PanelAccountSettings.Controls.Add(this.textBox3);
-            this.PanelAccountSettings.Controls.Add(this.textBox2);
+            this.PanelAccountSettings.Controls.Add(this.TextBoxNewPasswordConfirm);
+            this.PanelAccountSettings.Controls.Add(this.TextBoxNewPassword);
             this.PanelAccountSettings.Controls.Add(this.TextBoxEmail);
             this.PanelAccountSettings.Controls.Add(this.LabelAccountTitle);
             this.PanelAccountSettings.Controls.Add(this.ButtonAccountShowMenu);
@@ -362,14 +362,15 @@
             this.LabelDeleteWarning.Size = new System.Drawing.Size(0, 29);
             this.LabelDeleteWarning.TabIndex = 19;
             // 
-            // ButtonSaveChanges
+            // ButtonUpdateProfile
             // 
-            this.ButtonSaveChanges.Location = new System.Drawing.Point(250, 700);
-            this.ButtonSaveChanges.Name = "ButtonSaveChanges";
-            this.ButtonSaveChanges.Size = new System.Drawing.Size(200, 50);
-            this.ButtonSaveChanges.TabIndex = 18;
-            this.ButtonSaveChanges.Text = "Save Changes";
-            this.ButtonSaveChanges.UseVisualStyleBackColor = true;
+            this.ButtonUpdateProfile.Location = new System.Drawing.Point(250, 700);
+            this.ButtonUpdateProfile.Name = "ButtonUpdateProfile";
+            this.ButtonUpdateProfile.Size = new System.Drawing.Size(200, 50);
+            this.ButtonUpdateProfile.TabIndex = 18;
+            this.ButtonUpdateProfile.Text = "Save Changes";
+            this.ButtonUpdateProfile.UseVisualStyleBackColor = true;
+            this.ButtonUpdateProfile.Click += new System.EventHandler(this.ButtonUpdateProfileClick);
             // 
             // ButtonDeleteAccount
             // 
@@ -430,13 +431,13 @@
             this.LabelOldPassword.TabIndex = 12;
             this.LabelOldPassword.Text = "Enter Current Password";
             // 
-            // textBox4
+            // TextBoxOldPassword
             // 
-            this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.textBox4.Location = new System.Drawing.Point(250, 85);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(700, 26);
-            this.textBox4.TabIndex = 11;
+            this.TextBoxOldPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.TextBoxOldPassword.Location = new System.Drawing.Point(250, 85);
+            this.TextBoxOldPassword.Name = "TextBoxOldPassword";
+            this.TextBoxOldPassword.Size = new System.Drawing.Size(700, 26);
+            this.TextBoxOldPassword.TabIndex = 11;
             // 
             // LabelConfirmPassword
             // 
@@ -506,21 +507,21 @@
             this.SettingEmailLabel.TabIndex = 5;
             this.SettingEmailLabel.Text = "Email";
             // 
-            // textBox3
+            // TextBoxNewPasswordConfirm
             // 
-            this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.textBox3.Location = new System.Drawing.Point(250, 255);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(700, 26);
-            this.textBox3.TabIndex = 4;
+            this.TextBoxNewPasswordConfirm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.TextBoxNewPasswordConfirm.Location = new System.Drawing.Point(250, 255);
+            this.TextBoxNewPasswordConfirm.Name = "TextBoxNewPasswordConfirm";
+            this.TextBoxNewPasswordConfirm.Size = new System.Drawing.Size(700, 26);
+            this.TextBoxNewPasswordConfirm.TabIndex = 4;
             // 
-            // textBox2
+            // TextBoxNewPassword
             // 
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.textBox2.Location = new System.Drawing.Point(250, 170);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(700, 26);
-            this.textBox2.TabIndex = 3;
+            this.TextBoxNewPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.TextBoxNewPassword.Location = new System.Drawing.Point(250, 170);
+            this.TextBoxNewPassword.Name = "TextBoxNewPassword";
+            this.TextBoxNewPassword.Size = new System.Drawing.Size(700, 26);
+            this.TextBoxNewPassword.TabIndex = 3;
             // 
             // TextBoxEmail
             // 
@@ -563,6 +564,23 @@
             this.PanelArtemisCalender.Size = new System.Drawing.Size(1300, 800);
             this.PanelArtemisCalender.TabIndex = 3;
             // 
+            // ButtonNewEvent
+            // 
+            this.ButtonNewEvent.Location = new System.Drawing.Point(25, 125);
+            this.ButtonNewEvent.Name = "ButtonNewEvent";
+            this.ButtonNewEvent.Size = new System.Drawing.Size(200, 50);
+            this.ButtonNewEvent.TabIndex = 3;
+            this.ButtonNewEvent.Text = "New Event";
+            this.ButtonNewEvent.UseVisualStyleBackColor = true;
+            this.ButtonNewEvent.Click += new System.EventHandler(this.ButtonNewEventClick);
+            // 
+            // PanelDynamicCalender
+            // 
+            this.PanelDynamicCalender.Location = new System.Drawing.Point(250, 0);
+            this.PanelDynamicCalender.Name = "PanelDynamicCalender";
+            this.PanelDynamicCalender.Size = new System.Drawing.Size(800, 800);
+            this.PanelDynamicCalender.TabIndex = 2;
+            // 
             // LabelCalender
             // 
             this.LabelCalender.AutoSize = true;
@@ -584,34 +602,17 @@
             this.ButtonCalenderSidePanel.UseVisualStyleBackColor = true;
             this.ButtonCalenderSidePanel.Click += new System.EventHandler(this.CalenderMenuClick);
             // 
-            // PanelDynamicCalender
-            // 
-            this.PanelDynamicCalender.Location = new System.Drawing.Point(250, 0);
-            this.PanelDynamicCalender.Name = "PanelDynamicCalender";
-            this.PanelDynamicCalender.Size = new System.Drawing.Size(800, 800);
-            this.PanelDynamicCalender.TabIndex = 2;
-            // 
-            // ButtonNewEvent
-            // 
-            this.ButtonNewEvent.Location = new System.Drawing.Point(25, 125);
-            this.ButtonNewEvent.Name = "ButtonNewEvent";
-            this.ButtonNewEvent.Size = new System.Drawing.Size(200, 50);
-            this.ButtonNewEvent.TabIndex = 3;
-            this.ButtonNewEvent.Text = "New Event";
-            this.ButtonNewEvent.UseVisualStyleBackColor = true;
-            this.ButtonNewEvent.Click += new System.EventHandler(this.ButtonNewEventClick);
-            // 
             // ArtemisMainPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(1300, 800);
+            this.Controls.Add(this.PanelAccountSettings);
+            this.Controls.Add(this.PanelSideMenu);
             this.Controls.Add(this.PanelArtemisCalender);
             this.Controls.Add(this.PanelKeyHook);
             this.Controls.Add(this.PanelArtemisVoice);
-            this.Controls.Add(this.PanelAccountSettings);
-            this.Controls.Add(this.PanelSideMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ArtemisMainPage";
             this.Text = "ArtemisMainPage";
@@ -647,8 +648,8 @@
         private System.Windows.Forms.Label LabelAccountTitle;
         private System.Windows.Forms.Label LabelGreating;
         private System.Windows.Forms.Label SettingEmailLabel;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox TextBoxNewPasswordConfirm;
+        private System.Windows.Forms.TextBox TextBoxNewPassword;
         private System.Windows.Forms.TextBox TextBoxEmail;
         private System.Windows.Forms.RadioButton RadioButtonFunctional;
         private System.Windows.Forms.RadioButton RadioButtonModern;
@@ -656,13 +657,13 @@
         private System.Windows.Forms.Label LabelNewPassword;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button ButtonCalender;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox TextBoxOldPassword;
         private System.Windows.Forms.Label LabelOldPassword;
         private System.Windows.Forms.Label LabelFirstName;
         private System.Windows.Forms.Label LabelLastname;
         private System.Windows.Forms.TextBox TextBoxLastname;
         private System.Windows.Forms.TextBox TextBoxFirstname;
-        private System.Windows.Forms.Button ButtonSaveChanges;
+        private System.Windows.Forms.Button ButtonUpdateProfile;
         private System.Windows.Forms.Button ButtonDeleteAccount;
         private System.Windows.Forms.Label LabelDeleteWarning;
         private System.Windows.Forms.Button ButtonDeleteKeys;

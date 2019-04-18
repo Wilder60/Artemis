@@ -36,13 +36,13 @@
             this.LabelEndTime = new System.Windows.Forms.Label();
             this.DateTimeStartDate = new System.Windows.Forms.DateTimePicker();
             this.DateTimeEndDate = new System.Windows.Forms.DateTimePicker();
-            this.DateTimeEndTime = new System.Windows.Forms.DateTimePicker();
-            this.DateTimeStartTime = new System.Windows.Forms.DateTimePicker();
             this.TextBoxOffset = new System.Windows.Forms.TextBox();
             this.ComboBoxOffset = new System.Windows.Forms.ComboBox();
             this.LabelNotifyTime = new System.Windows.Forms.Label();
             this.LabelBefore = new System.Windows.Forms.Label();
             this.TextBoxLocation = new System.Windows.Forms.TextBox();
+            this.DateTimeStartTime = new System.Windows.Forms.DateTimePicker();
+            this.DateTimeEndTime = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // TextBoxTitle
@@ -132,24 +132,6 @@
             this.DateTimeEndDate.TabIndex = 9;
             this.DateTimeEndDate.ValueChanged += new System.EventHandler(this.DateTimeEndValueChanged);
             // 
-            // DateTimeEndTime
-            // 
-            this.DateTimeEndTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DateTimeEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.DateTimeEndTime.Location = new System.Drawing.Point(219, 215);
-            this.DateTimeEndTime.Name = "DateTimeEndTime";
-            this.DateTimeEndTime.Size = new System.Drawing.Size(85, 26);
-            this.DateTimeEndTime.TabIndex = 10;
-            // 
-            // DateTimeStartTime
-            // 
-            this.DateTimeStartTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DateTimeStartTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.DateTimeStartTime.Location = new System.Drawing.Point(219, 165);
-            this.DateTimeStartTime.Name = "DateTimeStartTime";
-            this.DateTimeStartTime.Size = new System.Drawing.Size(85, 26);
-            this.DateTimeStartTime.TabIndex = 13;
-            // 
             // TextBoxOffset
             // 
             this.TextBoxOffset.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -208,6 +190,26 @@
             this.TextBoxLocation.GotFocus += new System.EventHandler(this.TextBoxGainFocus);
             this.TextBoxLocation.LostFocus += new System.EventHandler(this.TextBoxLostFocus);
             // 
+            // DateTimeStartTime
+            // 
+            this.DateTimeStartTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DateTimeStartTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.DateTimeStartTime.Location = new System.Drawing.Point(219, 165);
+            this.DateTimeStartTime.Name = "DateTimeStartTime";
+            this.DateTimeStartTime.ShowUpDown = true;
+            this.DateTimeStartTime.Size = new System.Drawing.Size(113, 26);
+            this.DateTimeStartTime.TabIndex = 13;
+            // 
+            // DateTimeEndTime
+            // 
+            this.DateTimeEndTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DateTimeEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.DateTimeEndTime.Location = new System.Drawing.Point(219, 215);
+            this.DateTimeEndTime.Name = "DateTimeEndTime";
+            this.DateTimeEndTime.ShowUpDown = true;
+            this.DateTimeEndTime.Size = new System.Drawing.Size(113, 26);
+            this.DateTimeEndTime.TabIndex = 10;
+            // 
             // CreateCalenderEvent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -247,12 +249,12 @@
         private System.Windows.Forms.Label LabelEndTime;
         private System.Windows.Forms.DateTimePicker DateTimeStartDate;
         private System.Windows.Forms.DateTimePicker DateTimeEndDate;
-        private System.Windows.Forms.DateTimePicker DateTimeEndTime;
-        private System.Windows.Forms.DateTimePicker DateTimeStartTime;
         private System.Windows.Forms.TextBox TextBoxOffset;
         private System.Windows.Forms.ComboBox ComboBoxOffset;
         private System.Windows.Forms.Label LabelNotifyTime;
         private System.Windows.Forms.Label LabelBefore;
         private System.Windows.Forms.TextBox TextBoxLocation;
+        private System.Windows.Forms.DateTimePicker DateTimeStartTime;
+        private System.Windows.Forms.DateTimePicker DateTimeEndTime;
     }
 }

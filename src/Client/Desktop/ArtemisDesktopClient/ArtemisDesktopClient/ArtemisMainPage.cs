@@ -172,6 +172,5 @@ namespace ArtemisDesktopClient
             });
             thread.Start();
         }
-
     }
 }

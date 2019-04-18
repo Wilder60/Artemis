@@ -16,6 +16,7 @@ namespace ArtemisDesktopClient
         public CreateCalenderEvent()
         {
             InitializeComponent();
+            ComboBoxOffset.SelectedItem = "Minutes";
         }
 
         private void ButtonCancelCreate_Click(object sender, EventArgs e)
