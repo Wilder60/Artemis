@@ -39,11 +39,13 @@ namespace ArtemisDesktopClient
             PanelControl["Voice"] = PanelArtemisVoice;
             PanelControl["Settings"] = PanelAccountSettings;
             PanelControl["KeyHook"] = PanelKeyHook;
+            PanelControl["Calender"] = PanelArtemisCalender;
             _AuthToken = Token;
             _Account = account;
             this.PanelAccountSettings.Hide();
-            this.PanelKeyHook.Hide();
+            this.PanelArtemisCalender.Hide();
             this.PanelSideMenu.Hide();
+            this.PanelKeyHook.Hide();
             this.PanelArtemisVoice.Show();
             Panelinit();
             startlistening();
@@ -51,12 +53,13 @@ namespace ArtemisDesktopClient
 
         //These are heads that are required to use
         partial void ButtonArtemisClick(object sender, EventArgs e);
-        partial void Button2Click(object sender, EventArgs e);
+        partial void ButtonCloseSideMenuClick(object sender, EventArgs e);
         partial void button3_Click(object sender, EventArgs e);
         partial void ButtonKeyHookClick(object sender, EventArgs e);
         partial void ButtonLogOutClick(object sender, EventArgs e);
         partial void ButtonAccountPanelSwitch(object sender, EventArgs e);
         partial void button4_Click(object sender, EventArgs e);
+        partial void ButtonCalenderPanelSwitch(object sender, EventArgs e);
 
         /// <summary>
         /// When the mouse is pressed down, gets the last location
@@ -169,5 +172,6 @@ namespace ArtemisDesktopClient
             });
             thread.Start();
         }
+
     }
 }

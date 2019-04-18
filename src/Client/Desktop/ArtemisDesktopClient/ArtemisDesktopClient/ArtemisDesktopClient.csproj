@@ -56,6 +56,9 @@
     <Compile Include="ArtemisAccountSettings.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ArtemisCalender.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ArtemisDropDown.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +78,12 @@
       <DependentUpon>ArtemisPageLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="CalenderEvent.cs" />
+    <Compile Include="CreateCalenderEvent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateCalenderEvent.Designer.cs">
+      <DependentUpon>CreateCalenderEvent.cs</DependentUpon>
+    </Compile>
     <Compile Include="EventNotification.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,6 +101,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ArtemisPageLogin.resx">
       <DependentUpon>ArtemisPageLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreateCalenderEvent.resx">
+      <DependentUpon>CreateCalenderEvent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EventNotification.resx">
       <DependentUpon>EventNotification.cs</DependentUpon>

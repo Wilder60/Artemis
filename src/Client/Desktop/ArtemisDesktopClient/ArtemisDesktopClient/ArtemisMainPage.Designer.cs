@@ -69,10 +69,16 @@
             this.TextBoxEmail = new System.Windows.Forms.TextBox();
             this.LabelAccountTitle = new System.Windows.Forms.Label();
             this.ButtonAccountShowMenu = new System.Windows.Forms.Button();
+            this.PanelArtemisCalender = new System.Windows.Forms.Panel();
+            this.LabelCalender = new System.Windows.Forms.Label();
+            this.ButtonCalenderSidePanel = new System.Windows.Forms.Button();
+            this.PanelDynamicCalender = new System.Windows.Forms.Panel();
+            this.ButtonNewEvent = new System.Windows.Forms.Button();
             this.PanelArtemisVoice.SuspendLayout();
             this.PanelSideMenu.SuspendLayout();
             this.PanelKeyHook.SuspendLayout();
             this.PanelAccountSettings.SuspendLayout();
+            this.PanelArtemisCalender.SuspendLayout();
             this.SuspendLayout();
             // 
             // ButtonLogOut
@@ -108,7 +114,7 @@
             this.CloseSideMenu.TabStop = false;
             this.CloseSideMenu.Text = "Close";
             this.CloseSideMenu.UseVisualStyleBackColor = true;
-            this.CloseSideMenu.Click += new System.EventHandler(this.Button2Click);
+            this.CloseSideMenu.Click += new System.EventHandler(this.ButtonCloseSideMenuClick);
             // 
             // button3
             // 
@@ -223,6 +229,7 @@
             this.ButtonCalender.TabIndex = 5;
             this.ButtonCalender.Text = "Calender";
             this.ButtonCalender.UseVisualStyleBackColor = false;
+            this.ButtonCalender.Click += new System.EventHandler(this.ButtonCalenderPanelSwitch);
             // 
             // PanelKeyHook
             // 
@@ -299,7 +306,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(1160, 10);
+            this.label1.Location = new System.Drawing.Point(1160, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(132, 39);
             this.label1.TabIndex = 1;
@@ -538,11 +545,61 @@
             // 
             this.ButtonAccountShowMenu.Location = new System.Drawing.Point(0, 0);
             this.ButtonAccountShowMenu.Name = "ButtonAccountShowMenu";
-            this.ButtonAccountShowMenu.Size = new System.Drawing.Size(100, 50);
+            this.ButtonAccountShowMenu.Size = new System.Drawing.Size(100, 75);
             this.ButtonAccountShowMenu.TabIndex = 0;
             this.ButtonAccountShowMenu.Text = "Menu";
             this.ButtonAccountShowMenu.UseVisualStyleBackColor = true;
             this.ButtonAccountShowMenu.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // PanelArtemisCalender
+            // 
+            this.PanelArtemisCalender.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.PanelArtemisCalender.Controls.Add(this.ButtonNewEvent);
+            this.PanelArtemisCalender.Controls.Add(this.PanelDynamicCalender);
+            this.PanelArtemisCalender.Controls.Add(this.LabelCalender);
+            this.PanelArtemisCalender.Controls.Add(this.ButtonCalenderSidePanel);
+            this.PanelArtemisCalender.Location = new System.Drawing.Point(0, 0);
+            this.PanelArtemisCalender.Name = "PanelArtemisCalender";
+            this.PanelArtemisCalender.Size = new System.Drawing.Size(1300, 800);
+            this.PanelArtemisCalender.TabIndex = 3;
+            // 
+            // LabelCalender
+            // 
+            this.LabelCalender.AutoSize = true;
+            this.LabelCalender.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelCalender.ForeColor = System.Drawing.Color.White;
+            this.LabelCalender.Location = new System.Drawing.Point(1159, 8);
+            this.LabelCalender.Name = "LabelCalender";
+            this.LabelCalender.Size = new System.Drawing.Size(133, 39);
+            this.LabelCalender.TabIndex = 1;
+            this.LabelCalender.Text = "Calender";
+            // 
+            // ButtonCalenderSidePanel
+            // 
+            this.ButtonCalenderSidePanel.Location = new System.Drawing.Point(0, 0);
+            this.ButtonCalenderSidePanel.Name = "ButtonCalenderSidePanel";
+            this.ButtonCalenderSidePanel.Size = new System.Drawing.Size(100, 75);
+            this.ButtonCalenderSidePanel.TabIndex = 0;
+            this.ButtonCalenderSidePanel.Text = "Menu";
+            this.ButtonCalenderSidePanel.UseVisualStyleBackColor = true;
+            this.ButtonCalenderSidePanel.Click += new System.EventHandler(this.CalenderMenuClick);
+            // 
+            // PanelDynamicCalender
+            // 
+            this.PanelDynamicCalender.Location = new System.Drawing.Point(250, 0);
+            this.PanelDynamicCalender.Name = "PanelDynamicCalender";
+            this.PanelDynamicCalender.Size = new System.Drawing.Size(800, 800);
+            this.PanelDynamicCalender.TabIndex = 2;
+            // 
+            // ButtonNewEvent
+            // 
+            this.ButtonNewEvent.Location = new System.Drawing.Point(25, 125);
+            this.ButtonNewEvent.Name = "ButtonNewEvent";
+            this.ButtonNewEvent.Size = new System.Drawing.Size(200, 50);
+            this.ButtonNewEvent.TabIndex = 3;
+            this.ButtonNewEvent.Text = "New Event";
+            this.ButtonNewEvent.UseVisualStyleBackColor = true;
+            this.ButtonNewEvent.Click += new System.EventHandler(this.ButtonNewEventClick);
             // 
             // ArtemisMainPage
             // 
@@ -550,10 +607,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(1300, 800);
+            this.Controls.Add(this.PanelArtemisCalender);
             this.Controls.Add(this.PanelKeyHook);
-            this.Controls.Add(this.PanelSideMenu);
             this.Controls.Add(this.PanelArtemisVoice);
             this.Controls.Add(this.PanelAccountSettings);
+            this.Controls.Add(this.PanelSideMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ArtemisMainPage";
             this.Text = "ArtemisMainPage";
@@ -564,6 +622,8 @@
             this.PanelKeyHook.PerformLayout();
             this.PanelAccountSettings.ResumeLayout(false);
             this.PanelAccountSettings.PerformLayout();
+            this.PanelArtemisCalender.ResumeLayout(false);
+            this.PanelArtemisCalender.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -611,5 +671,10 @@
         private System.Windows.Forms.Panel PanelDynamicKeyHook;
         private System.Windows.Forms.Button ButtonCreateNewPassword;
         private System.Windows.Forms.Label LabelKeyHookDescription;
+        private System.Windows.Forms.Panel PanelArtemisCalender;
+        private System.Windows.Forms.Button ButtonCalenderSidePanel;
+        private System.Windows.Forms.Label LabelCalender;
+        private System.Windows.Forms.Panel PanelDynamicCalender;
+        private System.Windows.Forms.Button ButtonNewEvent;
     }
 }

@@ -36,9 +36,9 @@ namespace ArtemisDesktopClient
         /// <returns>
         /// void
         /// </returns>
-        partial void Button2Click(object sender, EventArgs e)
+        partial void ButtonCloseSideMenuClick(object sender, EventArgs e)
         {
-            this.PanelSideMenu.SendToBack();
+            this.PanelControl["SideMenu"].SendToBack();
         }
 
         /// <summary>
@@ -52,9 +52,23 @@ namespace ArtemisDesktopClient
         /// </returns>
         partial void ButtonArtemisClick(object sender, EventArgs e)
         {
-            this.PanelSideMenu.Hide();
-            this.PanelArtemisVoice.Show();
-            this.PanelArtemisVoice.BringToFront();
+            this.PanelControl["Voice"].Show();
+            this.PanelControl["Voice"].BringToFront();
+        }
+
+        /// <summary>
+        /// The Click EventHandler for the ButtonCalender, this will bring the
+        /// Calender Panel to the front page
+        /// </summary>
+        /// <param name="sender">The button being clicked - ButtonCalender</param>
+        /// <param name="e">The EventArgs </param>
+        /// <returns>
+        /// void
+        /// </returns>
+        partial void ButtonCalenderPanelSwitch(object sender, EventArgs e)
+        {
+            this.PanelControl["Calender"].Show();
+            this.PanelControl["Calender"].BringToFront();
         }
 
         /// <summary>
