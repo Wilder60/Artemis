@@ -87,23 +87,24 @@ func getUpcomingEvents(Writer http.ResponseWriter, Request *http.Request) {
 		Writer.Write([]byte("Invalid token"))
 		return
 	}
-	GetRequest, ParseErr := parseCalenderRequest(Request)
-	if ParseErr != nil {
-		fmt.Fprintf(os.Stderr, ParseErr.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte("Error Parsing Data"))
+
+	UserID, ok := Request.URL.Query()["id"]
+	if !ok {
+		Writer.WriteHeader(http.StatusBadRequest)
+		Writer.Write([]byte("Invalid id"))
 		return
 	}
 
-	_, err := calender.GetEvents(GetRequest)
+	Events, err := calender.GetEvents(UserID[0])
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
 		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte("Something went wrong"))
+		Writer.Write([]byte(err.Error()))
 		return
 	}
 
 	Writer.WriteHeader(http.StatusAccepted)
+	Writer.Write(Events)
 	return
 }
 

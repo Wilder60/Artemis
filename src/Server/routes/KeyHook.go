@@ -104,6 +104,7 @@ func getKeys(Writer http.ResponseWriter, Request *http.Request) {
 		Writer.Write([]byte("Invalid id"))
 		return
 	}
+
 	Keys := keyhook.GetAllkeys(UserID[0])
 	fmt.Fprintf(os.Stdout, "GET\t\\KeyHook\t200\n")
 	Writer.WriteHeader(http.StatusOK)

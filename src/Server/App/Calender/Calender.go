@@ -2,6 +2,8 @@ package calender
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -12,16 +14,18 @@ import (
 )
 
 //EventInfo Contains all the information that an event needs
+//This package will contain all the info and
 type EventInfo struct {
 	EventID       string `json:"eventid,omitempty"`       //The eventname of the id
 	EventOwner    string `json:"eventowner,omitempty"`    //The id of the user that owns the alarm
 	EventName     string `json:"eventname,omitempty"`     //The name of the event
 	EventLocation string `json:"eventlocation,omitempty"` //The location of the event
 	EventLength   string `json:"eventlength,omitempty"`   //The start time to the end time (can be all day)
-	AlarmTime     int64  `json:"alarmtime,omitempty"`     //The start of the alarm
-	AlarmOffset   int64  `json:"alarmoffset,omitempty"`   //When the alarm should send a notification to the user
-	NotifyTime    int64  `json:"notifytime,omitempty"`    //When the time goes off
-	WentOff       bool   `json:"wentoff,omitempty"`       //Will determine if the alarm has went off
+
+	AlarmTime   int64 `json:"alarmtime,omitempty"`   //The start of the alarm
+	AlarmOffset int64 `json:"alarmoffset,omitempty"` //When the alarm should send a notification to the user
+	NotifyTime  int64 `json:"notifytime,omitempty"`  //When the time goes off
+	WentOff     bool  `json:"wentoff,omitempty"`     //Will determine if the alarm has went off
 }
 
 //DBClient connection to the mongodb database
@@ -60,22 +64,35 @@ func InsertEvent(NewEvent EventInfo) error {
 //Returns:
 //		nil and err if Find query fails else
 //		an array containing all struct and nil
-func GetEvents(GetRequest EventInfo) ([]EventInfo, error) {
+func GetEvents(UserID string) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	cancel()
 
-	var allEvents []EventInfo
 	cursor, err := calenderCollection.Find(
 		ctx,
 		bson.M{
-			"eventowner": GetRequest.EventOwner,
+			"eventowner": UserID,
 			"$and":       bson.M{"alarmtime": bson.M{"$lte": time.Now().Unix() + 2628000}}})
 
 	if err != nil {
-		return nil, err
+		fmt.Fprintf(os.Stdout, err.Error()+"\n")
+		return nil, errors.New("An Error Occured Querying the Database")
 	}
-	cursor.Decode(&allEvents)
-	return allEvents, nil
+
+	allEvents := make([]EventInfo, 0)
+	Event := EventInfo{}
+
+	for cursor.Next(ctx) {
+		cursor.Decode(&Event)
+		allEvents = append(allEvents, Event)
+	}
+
+	allEventsjson, err := json.Marshal(allEvents)
+	if err != nil {
+		return nil, errors.New("An Error Occured Marshalling Data")
+	}
+
+	return allEventsjson, nil
 }
 
 //EditEvent Updates an event that is currently running

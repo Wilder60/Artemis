@@ -4,6 +4,7 @@ import (
 	"Artemis/App/Account"
 	keyhook "Artemis/App/KeyHook"
 	"Artemis/Security/Authentication/JWT"
+	util "Artemis/util"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -57,49 +58,47 @@ func validateLogin(Writer http.ResponseWriter, Request *http.Request) {
 
 	LoginRequest, err := parseAuthRequest(Request)
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t500\n")
-		fmt.Fprintf(os.Stderr, err.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
+		util.RequestStatus("POST", "Auth", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Failure to parse request"))
 		return
 	}
 
 	DBAccount := account.Account{}
-	SearchErr := AccountsCollection.FindOne(ctx, bson.M{"email": LoginRequest.Email}).Decode(&DBAccount)
+	SearchErr := AccountsCollection.FindOne(
+		ctx,
+		bson.M{"email": LoginRequest.Email}).Decode(&DBAccount)
+
 	if SearchErr != nil {
-		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t500\n")
-		fmt.Fprintf(os.Stderr, err.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
+		util.RequestStatus("POST", "Auth", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Failure to Find Document"))
 		return
 	}
 
 	ValidHash := bcrypt.CompareHashAndPassword([]byte(DBAccount.Password), []byte(LoginRequest.Password))
 	if ValidHash != nil {
-		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t404\n")
-		Writer.WriteHeader(http.StatusBadRequest)
+		util.RequestStatus("POST", "Auth", "404")
+		util.Respond(Writer, http.StatusBadRequest, []byte("Error: Invalid Password"))
 		return
 	}
 
 	JWTToken, err := jwt.CreateToken(DBAccount)
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t500\n")
-		fmt.Fprintf(os.Stderr, err.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
+		util.RequestStatus("POST", "Auth", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Failure to create token"))
 		return
 	}
 
 	DBAccount.Password = ""
 	EncodeAccount, err := json.Marshal(DBAccount)
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "POST\t\\Auth\t500\n")
-		fmt.Fprintf(os.Stderr, err.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
+		util.RequestStatus("POST", "Auth", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Failure to Marshal Account"))
 		return
 	}
 
-	fmt.Fprintf(os.Stdout, "POST\t\\Auth\t200\n")
+	util.RequestStatus("POST", "Auth", "200")
 	Writer.Header().Set("MasterToken", JWTToken)
-	Writer.WriteHeader(http.StatusAccepted)
-	Writer.Write(EncodeAccount)
+	util.Respond(Writer, http.StatusAccepted, EncodeAccount)
 	return
 }
 
@@ -167,15 +166,56 @@ func createUser(Writer http.ResponseWriter, Request *http.Request) {
 //incoming data should look like
 //id, email, firstname, lastname
 func updateUser(Writer http.ResponseWriter, Request *http.Request) {
-	//AccountCollection := DBClient.Database("db").Collection("Accounts")
 	defer Request.Body.Close()
+	AccountCollection := DBClient.Database("db").Collection("Accounts")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	err := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if err != nil {
-		Writer.WriteHeader(http.StatusUnauthorized)
-		Writer.Write([]byte(err.Error()))
+		util.Respond(Writer, http.StatusUnauthorized, []byte("Error: Invalid Token"))
 		return
 	}
 
+	UpdateAccount := account.EditAccount{}
+	err = json.NewDecoder(Request.Body).Decode(&UpdateAccount)
+	if err != nil {
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Failure to Decode Body"))
+		return
+	}
+
+	DBAccount := account.Account{}
+	SearchErr := AccountCollection.FindOne(ctx, bson.M{"id": UpdateAccount.ID}).Decode(&DBAccount)
+	if SearchErr != nil {
+		util.RequestStatus("PATCH", "Auth", "404")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Document Not Found"))
+		return
+	}
+
+	ValidHash := bcrypt.CompareHashAndPassword([]byte(DBAccount.Password), []byte(UpdateAccount.Password))
+	if ValidHash != nil {
+		util.RequestStatus("PATCH", "Auth", "404")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Non Matching Password"))
+	}
+
+	NormializedAccount := account.ConvertToAccount(UpdateAccount)
+
+	HASHPASS, err := bcrypt.GenerateFromPassword([]byte(NormializedAccount.Password), bcrypt.DefaultCost)
+	if err != nil {
+		util.RequestStatus("PATCH", "Auth", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Creating Hash"))
+		return
+	}
+	NormializedAccount.Password = string(HASHPASS)
+
+	AccountCollection.ReplaceOne(
+		ctx,
+		bson.M{"id": NormializedAccount.ID},
+		NormializedAccount)
+
+	util.RequestStatus("PATCH", "Auth", "200")
+	util.Respond(Writer, http.StatusOK, nil)
+	return
 }
 
 //deleteUser is the function that handles all the DELETE requests for the /Auth route.
