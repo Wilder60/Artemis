@@ -16,7 +16,7 @@ namespace ArtemisDesktopClient
     partial class ArtemisMainPage
     {
         private bool CanDelete = false;
-        private List<TextBox> UpdatedTextBoxes = new List<TextBox>();
+        private List<TextBox> UpdatedTextBoxes;
         /// <summary>
         /// Will bring up the sidebar menu when clicked
         /// </summary>
@@ -52,12 +52,12 @@ namespace ArtemisDesktopClient
                     break;
             }
 
+            UpdatedTextBoxes = new List<TextBox>();
             UpdatedTextBoxes.Add(TextBoxEmail);
             UpdatedTextBoxes.Add(TextBoxOldPassword);
             UpdatedTextBoxes.Add(TextBoxNewPassword);
             UpdatedTextBoxes.Add(TextBoxFirstname);
             UpdatedTextBoxes.Add(TextBoxLastname);
-
         }
 
         private async void ButtonUpdateProfileClick(object sender, EventArgs e)
@@ -68,23 +68,32 @@ namespace ArtemisDesktopClient
             }
             UserAccount UpdateAccount = GetUpdatedAccount();
 
-            var PatchAccountJSON = new JavaScriptSerializer().Serialize(UpdateAccount);
-            HttpRequestMessage request = new HttpRequestMessage
+            try
             {
-                Content = new StringContent(PatchAccountJSON, Encoding.UTF8, "application/json"),
-                Method = new HttpMethod("PATCH"),
-                RequestUri = new Uri("http://127.0.0.1:3000/Auth")
-            };
-            request.Headers.Add("Authorization", _AuthToken);
-            var response = await _client.SendAsync(request);
-            if (response.IsSuccessStatusCode)
-            {
-                this.Owner.Show();
-                this.Close();
+                var PatchAccountJSON = new JavaScriptSerializer().Serialize(UpdateAccount);
+                LabelDeleteWarning.Text = PatchAccountJSON;
+                HttpRequestMessage request = new HttpRequestMessage
+                {
+                    Content = new StringContent(PatchAccountJSON, Encoding.UTF8, "application/json"),
+                    Method = new HttpMethod("PATCH"),
+                    RequestUri = new Uri("http://127.0.0.1:3000/Auth")
+                };
+                request.Headers.Add("Authorization", _AuthToken);
+                var response = await _client.SendAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    Run = false;
+                    this.Owner.Show();
+                    this.Close();
+                }
+                else
+                {
+                    LabelDeleteWarning.Text = await response.Content.ReadAsStringAsync();
+                }
             }
-            else
+            catch
             {
-                LabelDeleteWarning.Text = "Opps something when wrong";
+                LabelDeleteWarning.Text = "Error: Failure to Connect to Webserver";
             }
         }
 
@@ -140,6 +149,11 @@ namespace ArtemisDesktopClient
             else
             {
                 temp.pageStyle = RadioButtonFunctional.Text;
+            }
+
+            if(TextBoxNewPassword.Text == "")
+            {
+                temp.updatepassword = TextBoxOldPassword.Text;
             }
             return temp;
         }

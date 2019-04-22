@@ -180,6 +180,7 @@ func updateUser(Writer http.ResponseWriter, Request *http.Request) {
 	UpdateAccount := account.EditAccount{}
 	err = json.NewDecoder(Request.Body).Decode(&UpdateAccount)
 	if err != nil {
+		util.RequestStatus("PATCH", "Auth", "500")
 		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Failure to Decode Body"))
 		return
 	}
@@ -188,18 +189,17 @@ func updateUser(Writer http.ResponseWriter, Request *http.Request) {
 	SearchErr := AccountCollection.FindOne(ctx, bson.M{"id": UpdateAccount.ID}).Decode(&DBAccount)
 	if SearchErr != nil {
 		util.RequestStatus("PATCH", "Auth", "404")
-		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Document Not Found"))
+		util.Respond(Writer, http.StatusNotFound, []byte("Error: Document Not Found"))
 		return
 	}
 
 	ValidHash := bcrypt.CompareHashAndPassword([]byte(DBAccount.Password), []byte(UpdateAccount.Password))
 	if ValidHash != nil {
 		util.RequestStatus("PATCH", "Auth", "404")
-		util.Respond(Writer, http.StatusInternalServerError, []byte("Error: Non Matching Password"))
+		util.Respond(Writer, http.StatusNotFound, []byte("Error: Non Matching Password"))
 	}
 
 	NormializedAccount := account.ConvertToAccount(UpdateAccount)
-
 	HASHPASS, err := bcrypt.GenerateFromPassword([]byte(NormializedAccount.Password), bcrypt.DefaultCost)
 	if err != nil {
 		util.RequestStatus("PATCH", "Auth", "500")
@@ -207,7 +207,6 @@ func updateUser(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 	NormializedAccount.Password = string(HASHPASS)
-
 	AccountCollection.ReplaceOne(
 		ctx,
 		bson.M{"id": NormializedAccount.ID},

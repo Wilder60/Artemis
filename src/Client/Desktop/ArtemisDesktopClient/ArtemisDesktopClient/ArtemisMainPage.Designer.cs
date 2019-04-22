@@ -320,6 +320,9 @@
             this.PanelDynamicKeyHook.Name = "PanelDynamicKeyHook";
             this.PanelDynamicKeyHook.Size = new System.Drawing.Size(875, 725);
             this.PanelDynamicKeyHook.TabIndex = 5;
+            this.PanelDynamicKeyHook.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseDown);
+            this.PanelDynamicKeyHook.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseMove);
+            this.PanelDynamicKeyHook.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseUp);
             // 
             // PanelAccountSettings
             // 
@@ -563,6 +566,9 @@
             this.PanelArtemisCalender.Name = "PanelArtemisCalender";
             this.PanelArtemisCalender.Size = new System.Drawing.Size(1300, 800);
             this.PanelArtemisCalender.TabIndex = 3;
+            this.PanelArtemisCalender.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseDown);
+            this.PanelArtemisCalender.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseMove);
+            this.PanelArtemisCalender.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseUp);
             // 
             // ButtonNewEvent
             // 
@@ -576,10 +582,14 @@
             // 
             // PanelDynamicCalender
             // 
-            this.PanelDynamicCalender.Location = new System.Drawing.Point(250, 0);
+            this.PanelDynamicCalender.AutoScroll = true;
+            this.PanelDynamicCalender.Location = new System.Drawing.Point(250, 75);
             this.PanelDynamicCalender.Name = "PanelDynamicCalender";
-            this.PanelDynamicCalender.Size = new System.Drawing.Size(800, 800);
+            this.PanelDynamicCalender.Size = new System.Drawing.Size(800, 725);
             this.PanelDynamicCalender.TabIndex = 2;
+            this.PanelDynamicCalender.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseDown);
+            this.PanelDynamicCalender.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseMove);
+            this.PanelDynamicCalender.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BackGroundMouseUp);
             // 
             // LabelCalender
             // 
@@ -608,11 +618,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(1300, 800);
-            this.Controls.Add(this.PanelAccountSettings);
-            this.Controls.Add(this.PanelSideMenu);
             this.Controls.Add(this.PanelArtemisCalender);
             this.Controls.Add(this.PanelKeyHook);
             this.Controls.Add(this.PanelArtemisVoice);
+            this.Controls.Add(this.PanelAccountSettings);
+            this.Controls.Add(this.PanelSideMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ArtemisMainPage";
             this.Text = "ArtemisMainPage";

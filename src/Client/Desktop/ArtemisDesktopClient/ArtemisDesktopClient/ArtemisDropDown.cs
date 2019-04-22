@@ -24,6 +24,7 @@ namespace ArtemisDesktopClient
         {
             PanelControl["KeyHook"].Show();
             PanelControl["KeyHook"].BringToFront();
+            ClearPanel();
             refreshKeyHookpage();
         }
 
@@ -39,6 +40,7 @@ namespace ArtemisDesktopClient
         partial void ButtonCloseSideMenuClick(object sender, EventArgs e)
         {
             this.PanelControl["SideMenu"].SendToBack();
+
         }
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace ArtemisDesktopClient
         {
             this.PanelControl["Voice"].Show();
             this.PanelControl["Voice"].BringToFront();
+            ClearPanel();
         }
 
         /// <summary>
@@ -69,6 +72,8 @@ namespace ArtemisDesktopClient
         {
             this.PanelControl["Calender"].Show();
             this.PanelControl["Calender"].BringToFront();
+            ClearPanel();
+            BuildCalender();
         }
 
         /// <summary>
@@ -84,6 +89,7 @@ namespace ArtemisDesktopClient
         {
             PanelControl["Settings"].Show();
             PanelControl["Settings"].BringToFront();
+            ClearPanel();
             Settingsinit();
         }
 

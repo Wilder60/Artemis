@@ -291,8 +291,8 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.ClientSize = new System.Drawing.Size(400, 600);
-            this.Controls.Add(this.PanelCreateAccount);
             this.Controls.Add(this.PanelLogin);
+            this.Controls.Add(this.PanelCreateAccount);
             this.Icon = global::ArtemisDesktopClient.Properties.Resources.ArtemisBlue256x256TaskBar;
             this.Name = "ArtemisPageLogin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

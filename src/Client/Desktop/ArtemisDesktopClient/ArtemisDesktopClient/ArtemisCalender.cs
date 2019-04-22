@@ -15,12 +15,38 @@ namespace ArtemisDesktopClient
 {
     public partial class ArtemisMainPage
     {
-        public void RestartPanel()
+        public void RefreshCalenderPage()
         {
-            //make a get request to the server the return the list
+            BuildCalender();
         }
 
+        public void BuildCalender()
+        {
+            DateTime now = DateTime.Now;
+            for(int i = 0; i < 31; i++)
+            {
+                Label Day = new Label();
+                PanelDynamicCalender.Controls.Add(Day);
+                Day.Text = now.Date.ToLongDateString();
+                Day.Font = new Font("Calibri", 18F, FontStyle.Bold, GraphicsUnit.Point, ((0)));
+                Day.BackColor = Color.FromArgb(28, 28, 28);
+                Day.ForeColor = Color.White;
+                Day.Width = 775;
+                Day.Height = 35;
+                Day.Location = new Point(0, 0 + (i * 100));
+                Day.TextAlign = ContentAlignment.TopCenter;
+                now = now.AddDays(1);
+            }
+        }
 
+        public void ClearPanel()
+        {
+            foreach (Control item in PanelDynamicCalender.Controls)
+            {
+                item.Dispose();
+            }
+            PanelDynamicCalender.Controls.Clear();
+        }
 
         public void CalenderMenuClick(object sender, EventArgs e)
         {

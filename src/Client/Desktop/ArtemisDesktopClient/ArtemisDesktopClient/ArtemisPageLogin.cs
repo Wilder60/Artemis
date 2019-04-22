@@ -71,7 +71,7 @@ namespace ArtemisDesktopClient
                     new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!response.IsSuccessStatusCode)
                 {
-                    LabelLoginError.Text = response.ReasonPhrase;
+                    LabelLoginError.Text = await response.Content.ReadAsStringAsync();
                 }
                 else
                 {
@@ -279,10 +279,10 @@ namespace ArtemisDesktopClient
             ((TextBox)sender).ForeColor = Color.Gray;
             switch(TextBoxName)
             {
-                case "TextBoxUsername":
+                case "TextBoxLoginEmail":
                     TextBoxLoginEmail.Text = "Email (email@example.com)";
                     break;
-                case "TextBoxPassword":
+                case "TextBoxLoginPassword":
                     TextBoxLoginPassword.Text = "Password";
                     TextBoxLoginPassword.PasswordChar = '\0';
                     break;
