@@ -16,11 +16,19 @@ namespace ArtemisDesktopClient
         public string lastname { get; set; }
         public string updatepassword { get; set; }
 
+        /// <summary>
+        /// Default Constructor for the UserAccount
+        /// This is needed for deserialization
+        /// </summary>
         public UserAccount()
         {
 
         }
 
+        /// <summary>
+        /// Overloaded constructor for created a updated account
+        /// </summary>
+        /// <param name="account">The account to copy</param>
         public UserAccount(UserAccount account)
         {
             id = account.id;

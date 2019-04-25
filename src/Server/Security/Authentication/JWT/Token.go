@@ -16,8 +16,12 @@ type artemisClaims struct {
 
 var signingKey = "AllYourBase"
 
-//CreateToken Creates a new JWT token that will allow the user to make requests to
-//routes other then the login route
+//CreateToken Creates a new JWT token that will allow the user to make requests to the server
+//Paraemters:
+//		AccountToTokenize -> The user account to generate the Token
+//Returns:
+//		If no error occured the token string and nil
+//		else an empity string and the error
 func CreateToken(AccountToTokenize account.Account) (string, error) {
 	claims := artemisClaims{
 		AccountToTokenize.ID,
@@ -37,8 +41,12 @@ func CreateToken(AccountToTokenize account.Account) (string, error) {
 	return SignedString, nil
 }
 
-//ValidateToken function to Parse and validate that a token that is sent to the
-//server is legit
+//ValidateToken Will parse the Token an check to see if the token is valid
+//Parameters:
+//		tokenString-> The jwt token to be validated
+//Returns:
+//		nil if token is valid
+//		else the error
 func ValidateToken(tokenString string) error {
 
 	token, err := jwt.ParseWithClaims(tokenString, &artemisClaims{}, func(token *jwt.Token) (interface{}, error) {
@@ -52,17 +60,4 @@ func ValidateToken(tokenString string) error {
 		return nil
 	}
 	return err
-}
-
-//ReturnEmailAddress stuff
-func ReturnEmailAddress(TokenString string) (string, error) {
-	token, err := jwt.ParseWithClaims(TokenString, &artemisClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(signingKey), nil
-	})
-
-	claims, ok := token.Claims.(*artemisClaims)
-	if ok != true {
-		return "", err
-	}
-	return claims.Id, nil
 }

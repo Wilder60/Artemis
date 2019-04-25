@@ -23,9 +23,9 @@ func Respond(Writer http.ResponseWriter, Status int, Content []byte) {
 
 //RequestStatus Prints how the request was returned
 //Parameters:
-//		Method ->
-//		Route ->
-//		Status ->
+//		Method -> The Method that was recieved i.e. POST, GET, PATCH
+//		Route -> The Route that was called in the request
+//		Status -> The status of the request
 //Returns:
 //		void
 func RequestStatus(Method, Route, Status string) {

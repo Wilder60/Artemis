@@ -128,6 +128,9 @@ namespace ArtemisDesktopClient
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         private void button1Click(object sender, EventArgs e)
         {
             PanelControl["SideMenu"].Show();

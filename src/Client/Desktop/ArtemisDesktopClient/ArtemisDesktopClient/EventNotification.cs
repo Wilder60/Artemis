@@ -22,17 +22,28 @@ namespace ArtemisDesktopClient
         private string EventID;
         private HttpClient client;
 
+        /// <summary>
+        /// The constructor for the EventNotification class
+        /// Load the values from the CalenderEvent object
+        /// </summary>
+        /// <param name="Token">The Users AuthToken</param>
+        /// <param name="calender">The CalenderEvent to Show</param>
         public EventNotification(IEnumerable<string> Token, CalenderEvent calender)
         {
             InitializeComponent();
-            EventID = calender.eventID;
-            LabelEventTitle.Text += "\t" + calender.eventName;
-            LabeLLocation.Text += "\t" + calender.eventlocation;
-            LabelTimeFrame.Text += "\t" + calender.EventLength;
+            EventID = calender.id;
+            LabelEventTitle.Text += "\t" + calender.name;
+            LabeLLocation.Text += "\t" + calender.location;
+            LabelTimeFrame.Text += "\t" + calender.length;
             AuthToken = Token;
             client = new HttpClient();
         }
 
+        /// <summary>
+        /// When the Okay button is clicked, it will make a delete request to the server
+        /// </summary>
+        /// <param name="sender">The button being clicked</param>
+        /// <param name="e">The EventArgs e</param>
         private async void ButtonOkClick(object sender, EventArgs e)
         {
             List<string> ListToDelete = new List<string>();

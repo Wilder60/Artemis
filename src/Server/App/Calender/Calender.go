@@ -16,16 +16,21 @@ import (
 //EventInfo Contains all the information that an event needs
 //This package will contain all the info and
 type EventInfo struct {
-	EventID       string `json:"eventid,omitempty"`       //The eventname of the id
-	EventOwner    string `json:"eventowner,omitempty"`    //The id of the user that owns the alarm
-	EventName     string `json:"eventname,omitempty"`     //The name of the event
-	EventLocation string `json:"eventlocation,omitempty"` //The location of the event
-	EventLength   string `json:"eventlength,omitempty"`   //The start time to the end time (can be all day)
-
-	AlarmTime   int64 `json:"alarmtime,omitempty"`   //The start of the alarm
-	AlarmOffset int64 `json:"alarmoffset,omitempty"` //When the alarm should send a notification to the user
-	NotifyTime  int64 `json:"notifytime,omitempty"`  //When the time goes off
-	WentOff     bool  `json:"wentoff,omitempty"`     //Will determine if the alarm has went off
+	ID          string `json:"id"`       //The eventname of the id
+	Owner       string `json:"owner"`    //The id of the user that owns the alarm
+	Name        string `json:"name"`     //The name of the event
+	Location    string `json:"location"` //The location of the event
+	Length      string `json:"length"`   //The start time to the end time (can be all day)
+	StartDate   string `json:"startdate"`
+	StartTime   string `json:"starttime"`
+	EndDate     string `json:"enddate"`
+	EndTime     string `json:"endtime"`
+	Alarmbase   string `json:"alarmbase"`
+	AlarmIter   string `json:"alarmiter"`
+	AlarmTime   int64  `json:"alarmtime"`            //The start of the alarm
+	AlarmOffset int64  `json:"alarmoffset"`          //When the alarm should send a notification to the user
+	NotifyTime  int64  `json:"notifytime,omitempty"` //When the time goes off
+	WentOff     bool   `json:"wentoff,omitempty"`    //Will determine if the alarm has went off
 }
 
 //DBClient connection to the mongodb database
@@ -47,7 +52,7 @@ func InsertEvent(NewEvent EventInfo) error {
 	defer cancel()
 
 	NewID := xid.New()
-	NewEvent.EventID = NewID.String()
+	NewEvent.ID = NewID.String()
 	NewEvent.NotifyTime = NewEvent.AlarmTime - NewEvent.AlarmOffset
 	NewEvent.WentOff = false
 	_, err := calenderCollection.InsertOne(ctx, NewEvent)
@@ -71,11 +76,11 @@ func GetEvents(UserID string) ([]byte, error) {
 	cursor, err := calenderCollection.Find(
 		ctx,
 		bson.M{
-			"eventowner": UserID,
-			"$and":       bson.M{"alarmtime": bson.M{"$lte": time.Now().Unix() + 2628000}}})
+			"owner": UserID,
+			"$and":  bson.M{"alarmtime": bson.M{"$lte": time.Now().Unix() + 2628000}}})
 
 	if err != nil {
-		fmt.Fprintf(os.Stdout, err.Error()+"\n")
+		fmt.Fprintf(os.Stderr, err.Error()+"\n")
 		return nil, errors.New("An Error Occured Querying the Database")
 	}
 
@@ -95,20 +100,25 @@ func GetEvents(UserID string) ([]byte, error) {
 	return allEventsjson, nil
 }
 
-//EditEvent Updates an event that is currently running
+//EditEvent Updates a currently stored event
+//Parameters:
+//		UpdateEvent -> the Event that is going to be updated
+//Returns:
+//		Error if the document fails to update else nil
 func EditEvent(UpdateEvent EventInfo) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	UpdateEvent.NotifyTime = UpdateEvent.AlarmTime - UpdateEvent.AlarmOffset
 	UpdateEvent.WentOff = false
 
-	_, UpdateErr := calenderCollection.UpdateOne(
+	_, UpdateErr := calenderCollection.ReplaceOne(
 		ctx,
-		bson.M{"eventid": UpdateEvent.EventID},
+		bson.M{"id": UpdateEvent.ID},
 		UpdateEvent)
 
 	if UpdateErr != nil {
-		return UpdateErr
+		fmt.Fprintf(os.Stdout, UpdateErr.Error())
+		return errors.New("Failure to update the Document")
 	}
 
 	return nil
@@ -126,7 +136,7 @@ func RemoveEvent(RemoveEvent EventInfo) error {
 
 	_, err := calenderCollection.DeleteOne(
 		ctx,
-		bson.M{"eventid": RemoveEvent.EventID})
+		bson.M{"id": RemoveEvent.ID})
 
 	if err != nil {
 		return err

@@ -10,7 +10,7 @@ import (
 	texttospeechpb "google.golang.org/genproto/googleapis/cloud/texttospeech/v1"
 )
 
-func ConvertTextToSpeech(a_StringToConvert string, a_ReturnLanguage string, a_PlayBackVoice texttospeechpb.SsmlVoiceGender) {
+func convertTextToSpeech(a_StringToConvert string, a_ReturnLanguage string, a_PlayBackVoice texttospeechpb.SsmlVoiceGender) {
 	//create a new context
 	ctx := context.Background()
 	client, err := texttospeech.NewClient(ctx)

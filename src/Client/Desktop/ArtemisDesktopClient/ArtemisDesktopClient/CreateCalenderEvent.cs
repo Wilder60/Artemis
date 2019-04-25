@@ -15,6 +15,7 @@ namespace ArtemisDesktopClient
     public partial class CreateCalenderEvent : Form
     {
         private HttpClient httpClient;
+        //The convertion of ComboBox items to the seconds eq
         private Dictionary<string, int> TimeConv = new Dictionary<string, int>()
         {
             ["Minutes"] = 60,
@@ -190,11 +191,18 @@ namespace ArtemisDesktopClient
         /// </returns>
         private CalenderEvent FormEvent()
         {
-            CalenderEvent NewEvent = new CalenderEvent();
-
-            NewEvent.owner = _account.id;
-            NewEvent.name = TextBoxNewTitle.Text;
-            NewEvent.location = TextBoxLocation.Text;
+            CalenderEvent NewEvent = new CalenderEvent
+            {
+                owner = _account.id,
+                name = TextBoxNewTitle.Text,
+                location = TextBoxLocation.Text,
+                startdate = DateTimeStartDate.Value.Date.ToLongDateString(),
+                starttime = DateTimeStartTime.Value.TimeOfDay.ToString(),
+                enddate = DateTimeEndDate.Value.Date.ToLongDateString(),
+                endtime = DateTimeEndTime.Value.TimeOfDay.ToString(),
+                alarmbase = TextBoxOffset.Text,
+                alarmiter = ComboBoxOffset.SelectedText
+            };
             if (CheckBoxAllDay.Checked)
             {
                 NewEvent.length = "All Day";
@@ -203,13 +211,6 @@ namespace ArtemisDesktopClient
             {
                 NewEvent.length = DateTimeStartTime.Value.TimeOfDay.ToString() + " - " + DateTimeEndTime.Value.TimeOfDay.ToString();
             }
-
-            NewEvent.startdate = DateTimeStartDate.Value.Date.ToLongDateString();
-            NewEvent.starttime = DateTimeStartTime.Value.TimeOfDay.ToString();
-            NewEvent.enddate = DateTimeEndDate.Value.Date.ToLongDateString();
-            NewEvent.endtime = DateTimeEndTime.Value.TimeOfDay.ToString();
-            NewEvent.alarmbase = TextBoxOffset.Text;
-            NewEvent.alarmiter = ComboBoxOffset.SelectedText;
 
             DateTime date = DateTimeStartDate.Value.Date + DateTimeStartTime.Value.TimeOfDay;
             DateTimeOffset timeOffset = new DateTimeOffset(date);

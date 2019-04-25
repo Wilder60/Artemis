@@ -13,9 +13,20 @@ using System.Text.RegularExpressions;
 
 namespace ArtemisDesktopClient
 {
+    /// <summary>
+    /// The partial cladd of ArtemisMainPage that handles the calender form
+    /// </summary>
     public partial class ArtemisMainPage
     {
-
+        /// <summary>
+        /// This function will reset the PanelDynamicCalender
+        /// </summary>
+        /// <remarks>
+        /// This is async as it have to wait for the GetAllEvents function
+        /// </remarks>
+        /// <returns>
+        /// void
+        /// </returns>
         public async void RefreshCalenderPage()
         {
             List<CalenderEvent> events = await GetAllEvents();
@@ -23,9 +34,17 @@ namespace ArtemisDesktopClient
             BuildCalender(events);
         }
 
+        /// <summary>
+        /// This will build the Calender and show all events
+        /// </summary>
+        /// <param name="events">The list of events</param>
+        /// <returns>
+        /// void
+        /// </returns>
         public void BuildCalender(List<CalenderEvent> events)
         {
             int OffSet = 0;
+            //Get the Date of today at midnight and converts it to UNIXTime
             DateTime Today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
             long TodayUnix = ((DateTimeOffset)Today).ToUnixTimeSeconds();
 
@@ -70,6 +89,15 @@ namespace ArtemisDesktopClient
             }
         }
 
+        /// <summary>
+        /// Gets all the events for the user that alarm within one month
+        /// </summary>
+        /// <remarks>
+        /// Makes a GET request to the Calender Route
+        /// </remarks>
+        /// <returns>
+        /// An List of all CalenderEvents for the user
+        /// </returns>
         public async Task<List<CalenderEvent>> GetAllEvents()
         {
 
@@ -115,12 +143,29 @@ namespace ArtemisDesktopClient
             PanelDynamicCalender.Refresh();
         }
 
+        /// <summary>
+        /// When the Menu Button is clicked it will bring up the side menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         public void CalenderMenuClick(object sender, EventArgs e)
         {
             PanelControl["SideMenu"].Show();
             PanelControl["SideMenu"].BringToFront();
         }
 
+        /// <summary>
+        /// Will open a new CreateCalenderEvent form to create a new Event and wait for the result
+        /// If the result is not DialogResult.Cancel it will refresh the page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         public void ButtonNewEventClick(object sender, EventArgs e)
         {
             CreateCalenderEvent calenderEvent = new CreateCalenderEvent(_Account, _AuthToken);
@@ -131,6 +176,15 @@ namespace ArtemisDesktopClient
             }
         }
 
+        /// <summary>
+        /// Will open a new CreateCalenderEvent form with the CalenderEvent data to edit an event
+        /// If the result is not DialogResult.Cancel it will refresh the page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>
+        /// void
+        /// </returns>
         public void EditButton(object sender, EventArgs e)
         {
             CreateCalenderEvent calenderEvent = new CreateCalenderEvent(_Account, _AuthToken, (CalenderEvent)((Label)sender).Tag);

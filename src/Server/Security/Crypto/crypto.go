@@ -9,9 +9,15 @@ import (
 	"io"
 )
 
+//Randomly Generated 32bit key
 var key = []byte("!Tr2PFFJQqs7-y3beej*%CJgwwmX=%Pj")
 
-//Encrypt Stuff to encrypt
+//Encrypt Will encrypt the inputed string using AES256 encryption
+//Parameters:
+//		password -> The string to encrypt
+//Returns:
+//		The Encrypted string and nil if no error occured
+//		else empty string and the error
 func Encrypt(password string) (string, error) {
 	plaintext := []byte(password)
 	AESblock, err := aes.NewCipher(plaintext)
@@ -35,7 +41,12 @@ func Encrypt(password string) (string, error) {
 	return cipherString, nil
 }
 
-//Decrypt Decrypts the cipherText
+//Decrypt Decrypts the inputed string and returns the byte array of plaintext
+//Parameters:
+//		cipherString -> the Encrypted string
+//Returns:
+//		If no error, the decoded array and nil
+//		Else nil and the error
 func Decrypt(cipherString string) ([]byte, error) {
 	cipherText, err := base64.StdEncoding.DecodeString(cipherString)
 	if err != nil {
