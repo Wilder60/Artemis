@@ -72,8 +72,7 @@ namespace ArtemisDesktopClient
         {
             this.PanelControl["Calender"].Show();
             this.PanelControl["Calender"].BringToFront();
-            ClearPanel();
-            BuildCalender();
+            RefreshCalenderPage();
         }
 
         /// <summary>

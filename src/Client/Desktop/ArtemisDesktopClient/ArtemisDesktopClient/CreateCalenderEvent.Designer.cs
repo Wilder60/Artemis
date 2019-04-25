@@ -45,6 +45,8 @@
             this.DateTimeEndTime = new System.Windows.Forms.DateTimePicker();
             this.LabelNewEvent = new System.Windows.Forms.Label();
             this.PanelNewEvent = new System.Windows.Forms.Panel();
+            this.ButtonDelete = new System.Windows.Forms.Button();
+            this.LabelError = new System.Windows.Forms.Label();
             this.PanelNewEvent.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -74,9 +76,9 @@
             // ButtonCreateEvent
             // 
             this.ButtonCreateEvent.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonCreateEvent.Location = new System.Drawing.Point(152, 475);
+            this.ButtonCreateEvent.Location = new System.Drawing.Point(250, 475);
             this.ButtonCreateEvent.Name = "ButtonCreateEvent";
-            this.ButtonCreateEvent.Size = new System.Drawing.Size(96, 40);
+            this.ButtonCreateEvent.Size = new System.Drawing.Size(95, 40);
             this.ButtonCreateEvent.TabIndex = 3;
             this.ButtonCreateEvent.Text = "Create";
             this.ButtonCreateEvent.UseVisualStyleBackColor = true;
@@ -109,11 +111,11 @@
             // LabelEndTime
             // 
             this.LabelEndTime.AutoSize = true;
-            this.LabelEndTime.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelEndTime.Font = new System.Drawing.Font("Calibri", 14.25F);
             this.LabelEndTime.ForeColor = System.Drawing.Color.White;
             this.LabelEndTime.Location = new System.Drawing.Point(25, 226);
             this.LabelEndTime.Name = "LabelEndTime";
-            this.LabelEndTime.Size = new System.Drawing.Size(37, 19);
+            this.LabelEndTime.Size = new System.Drawing.Size(44, 23);
             this.LabelEndTime.TabIndex = 7;
             this.LabelEndTime.Text = "End:";
             // 
@@ -125,7 +127,7 @@
             this.DateTimeStartDate.Name = "DateTimeStartDate";
             this.DateTimeStartDate.Size = new System.Drawing.Size(128, 26);
             this.DateTimeStartDate.TabIndex = 8;
-            this.DateTimeStartDate.ValueChanged += new System.EventHandler(this.DateTimeStartValueChanged);
+            this.DateTimeStartDate.ValueChanged += new System.EventHandler(this.DateTimeValueChanged);
             // 
             // DateTimeEndDate
             // 
@@ -135,12 +137,12 @@
             this.DateTimeEndDate.Name = "DateTimeEndDate";
             this.DateTimeEndDate.Size = new System.Drawing.Size(128, 26);
             this.DateTimeEndDate.TabIndex = 9;
-            this.DateTimeEndDate.ValueChanged += new System.EventHandler(this.DateTimeEndValueChanged);
+            this.DateTimeEndDate.ValueChanged += new System.EventHandler(this.DateTimeValueChanged);
             // 
             // TextBoxOffset
             // 
             this.TextBoxOffset.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextBoxOffset.Location = new System.Drawing.Point(64, 381);
+            this.TextBoxOffset.Location = new System.Drawing.Point(64, 371);
             this.TextBoxOffset.Name = "TextBoxOffset";
             this.TextBoxOffset.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.TextBoxOffset.Size = new System.Drawing.Size(100, 26);
@@ -156,7 +158,7 @@
             "Hours",
             "Days",
             "Weeks"});
-            this.ComboBoxOffset.Location = new System.Drawing.Point(183, 381);
+            this.ComboBoxOffset.Location = new System.Drawing.Point(183, 371);
             this.ComboBoxOffset.Name = "ComboBoxOffset";
             this.ComboBoxOffset.Size = new System.Drawing.Size(121, 28);
             this.ComboBoxOffset.TabIndex = 15;
@@ -166,7 +168,7 @@
             this.LabelNotifyTime.AutoSize = true;
             this.LabelNotifyTime.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelNotifyTime.ForeColor = System.Drawing.Color.White;
-            this.LabelNotifyTime.Location = new System.Drawing.Point(21, 347);
+            this.LabelNotifyTime.Location = new System.Drawing.Point(21, 337);
             this.LabelNotifyTime.Name = "LabelNotifyTime";
             this.LabelNotifyTime.Size = new System.Drawing.Size(87, 23);
             this.LabelNotifyTime.TabIndex = 16;
@@ -177,7 +179,7 @@
             this.LabelBefore.AutoSize = true;
             this.LabelBefore.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelBefore.ForeColor = System.Drawing.Color.White;
-            this.LabelBefore.Location = new System.Drawing.Point(318, 389);
+            this.LabelBefore.Location = new System.Drawing.Point(318, 379);
             this.LabelBefore.Name = "LabelBefore";
             this.LabelBefore.Size = new System.Drawing.Size(57, 20);
             this.LabelBefore.TabIndex = 17;
@@ -228,6 +230,8 @@
             // 
             // PanelNewEvent
             // 
+            this.PanelNewEvent.Controls.Add(this.LabelError);
+            this.PanelNewEvent.Controls.Add(this.ButtonDelete);
             this.PanelNewEvent.Controls.Add(this.LabelNewEvent);
             this.PanelNewEvent.Controls.Add(this.TextBoxLocation);
             this.PanelNewEvent.Controls.Add(this.LabelBefore);
@@ -248,6 +252,27 @@
             this.PanelNewEvent.Name = "PanelNewEvent";
             this.PanelNewEvent.Size = new System.Drawing.Size(400, 550);
             this.PanelNewEvent.TabIndex = 20;
+            // 
+            // ButtonDelete
+            // 
+            this.ButtonDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ButtonDelete.Location = new System.Drawing.Point(50, 475);
+            this.ButtonDelete.Name = "ButtonDelete";
+            this.ButtonDelete.Size = new System.Drawing.Size(95, 40);
+            this.ButtonDelete.TabIndex = 20;
+            this.ButtonDelete.Text = "Delete";
+            this.ButtonDelete.UseVisualStyleBackColor = true;
+            this.ButtonDelete.Click += new System.EventHandler(this.DeleteEvent);
+            // 
+            // LabelError
+            // 
+            this.LabelError.AutoSize = true;
+            this.LabelError.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelError.ForeColor = System.Drawing.Color.Red;
+            this.LabelError.Location = new System.Drawing.Point(25, 425);
+            this.LabelError.Name = "LabelError";
+            this.LabelError.Size = new System.Drawing.Size(0, 20);
+            this.LabelError.TabIndex = 21;
             // 
             // CreateCalenderEvent
             // 
@@ -284,5 +309,7 @@
         private System.Windows.Forms.DateTimePicker DateTimeEndTime;
         private System.Windows.Forms.Label LabelNewEvent;
         private System.Windows.Forms.Panel PanelNewEvent;
+        private System.Windows.Forms.Button ButtonDelete;
+        private System.Windows.Forms.Label LabelError;
     }
 }
