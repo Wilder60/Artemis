@@ -71,13 +71,21 @@ func InsertEvent(NewEvent EventInfo) error {
 //		an array containing all struct and nil
 func GetEvents(UserID string) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	cancel()
+	defer cancel()
 
+	//Use mongodb they said, ill be fun they said
 	cursor, err := calenderCollection.Find(
 		ctx,
-		bson.M{
-			"owner": UserID,
-			"$and":  bson.M{"alarmtime": bson.M{"$lte": time.Now().Unix() + 2628000}}})
+		bson.D{
+			bson.E{Key: "$and", Value: bson.A{
+				bson.D{
+					bson.E{Key: "owner", Value: UserID}},
+				bson.D{
+					bson.E{Key: "alarmtime", Value: bson.D{
+						bson.E{Key: "$lte", Value: time.Now().Unix() + 2628000},
+					}}},
+			}}},
+	)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error()+"\n")

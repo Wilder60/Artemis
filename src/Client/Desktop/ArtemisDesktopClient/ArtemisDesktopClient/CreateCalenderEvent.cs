@@ -84,8 +84,8 @@ namespace ArtemisDesktopClient
         private void CreateEvent(object sender, EventArgs e)
         {
             CalenderEvent calenderEvent = FormEvent();
-            var UpdateObj = new JavaScriptSerializer().Serialize(calenderEvent);
-            SendRequest(UpdateObj, HttpMethod.Post);
+            var CreateObj = new JavaScriptSerializer().Serialize(calenderEvent);
+            SendRequest(CreateObj, HttpMethod.Post);
         }
 
         /// <summary>
@@ -114,8 +114,8 @@ namespace ArtemisDesktopClient
         private void DeleteEvent(object sender, EventArgs e)
         {
             CalenderEvent calenderEvent = FormEvent();
-            var UpdateObj = new JavaScriptSerializer().Serialize(calenderEvent);
-            SendRequest(UpdateObj, HttpMethod.Delete);
+            var DeleteObj = new JavaScriptSerializer().Serialize(calenderEvent);
+            SendRequest(DeleteObj, HttpMethod.Delete);
         }
 
 
@@ -201,8 +201,12 @@ namespace ArtemisDesktopClient
                 enddate = DateTimeEndDate.Value.Date.ToLongDateString(),
                 endtime = DateTimeEndTime.Value.TimeOfDay.ToString(),
                 alarmbase = TextBoxOffset.Text,
-                alarmiter = ComboBoxOffset.SelectedText
+                alarmiter = (string)ComboBoxOffset.SelectedItem
             };
+            if (calenderEvent != null){
+                NewEvent.id = calenderEvent.id;
+            }
+
             if (CheckBoxAllDay.Checked)
             {
                 NewEvent.length = "All Day";
@@ -218,7 +222,8 @@ namespace ArtemisDesktopClient
             NewEvent.alarmtime = timeOffset.ToUnixTimeSeconds();
             //int.Prase can throw an exception if the string is invalid, but only valid inputs can be
             //entered so no try catch is needed
-            NewEvent.alarmoffset = (int.Parse(TextBoxOffset.Text) * TimeConv[ComboBoxOffset.SelectedText]);
+            TextBoxLocation.Text = ComboBoxOffset.SelectedText;
+            NewEvent.alarmoffset = (int.Parse(TextBoxOffset.Text) * TimeConv[(string)ComboBoxOffset.SelectedItem]);
 
             return NewEvent;
         }

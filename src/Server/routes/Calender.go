@@ -3,6 +3,7 @@ package routes
 import (
 	"Artemis/App/Calender"
 	"Artemis/Security/Authentication/JWT"
+	util "Artemis/util"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -44,8 +45,8 @@ func createEvent(Writer http.ResponseWriter, Request *http.Request) {
 	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if AuthErr != nil {
 		fmt.Fprintf(os.Stderr, AuthErr.Error())
-		Writer.WriteHeader(http.StatusUnauthorized)
-		Writer.Write([]byte("Invalid token"))
+		util.RequestStatus("Calender", "POST", "401")
+		util.Respond(Writer, http.StatusUnauthorized, []byte("Invalid token"))
 		return
 	}
 
@@ -53,8 +54,8 @@ func createEvent(Writer http.ResponseWriter, Request *http.Request) {
 	CreateRequest, err := parseCalenderRequest(Request)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte("Invalid data sent over"))
+		util.RequestStatus("Calender", "POST", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Invalid data sent over"))
 		return
 	}
 
@@ -62,8 +63,8 @@ func createEvent(Writer http.ResponseWriter, Request *http.Request) {
 	err = calender.InsertEvent(CreateRequest)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte("Error Parsing Data"))
+		util.RequestStatus("Calender", "POST", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error Parsing Data"))
 		return
 	}
 	Writer.WriteHeader(http.StatusAccepted)
@@ -83,28 +84,28 @@ func getUpcomingEvents(Writer http.ResponseWriter, Request *http.Request) {
 	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if AuthErr != nil {
 		fmt.Fprintf(os.Stderr, AuthErr.Error())
-		Writer.WriteHeader(http.StatusUnauthorized)
-		Writer.Write([]byte("Invalid token"))
+		util.RequestStatus("Calender", "GET", "401")
+		util.Respond(Writer, http.StatusUnauthorized, []byte("Invalid token"))
 		return
 	}
 
 	UserID, ok := Request.URL.Query()["id"]
 	if !ok {
-		Writer.WriteHeader(http.StatusBadRequest)
-		Writer.Write([]byte("Invalid id"))
+		util.RequestStatus("Calender", "GET", "404")
+		util.Respond(Writer, http.StatusNotFound, []byte("Invalid User Id"))
 		return
 	}
 
 	Events, err := calender.GetEvents(UserID[0])
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte(err.Error()))
+		util.RequestStatus("Calender", "GET", "500")
+		util.Respond(Writer, http.StatusUnauthorized, []byte("Failure to Query Database"))
 		return
 	}
 
-	Writer.WriteHeader(http.StatusAccepted)
-	Writer.Write(Events)
+	util.RequestStatus("Calender", "GET", "202")
+	util.Respond(Writer, http.StatusAccepted, Events)
 	return
 }
 
@@ -121,28 +122,29 @@ func updateEvent(Writer http.ResponseWriter, Request *http.Request) {
 	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if AuthErr != nil {
 		fmt.Fprintf(os.Stderr, AuthErr.Error())
-		Writer.WriteHeader(http.StatusUnauthorized)
-		Writer.Write([]byte("Invalid token"))
+		util.RequestStatus("Calender", "PUT", "401")
+		util.Respond(Writer, http.StatusUnauthorized, []byte("Invalid token"))
 		return
 	}
 
 	updateRequest, ParseErr := parseCalenderRequest(Request)
 	if ParseErr != nil {
 		fmt.Fprintf(os.Stderr, ParseErr.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte("Error Parsing Data"))
+		util.RequestStatus("Calender", "PUT", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error Parsing Data"))
 		return
 	}
 
 	err := calender.EditEvent(updateRequest)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte("Something went wrong"))
+		util.RequestStatus("Calender", "PUT", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Failure to Update Event"))
 		return
 	}
 
-	Writer.WriteHeader(http.StatusAccepted)
+	util.RequestStatus("Calender", "PUT", "200")
+	util.Respond(Writer, http.StatusOK, nil)
 	return
 }
 
@@ -159,27 +161,29 @@ func removeEvent(Writer http.ResponseWriter, Request *http.Request) {
 	AuthErr := jwt.ValidateToken(Request.Header["Authorization"][0])
 	if AuthErr != nil {
 		fmt.Fprintf(os.Stderr, AuthErr.Error())
-		Writer.WriteHeader(http.StatusUnauthorized)
-		Writer.Write([]byte("Invalid token"))
+		util.RequestStatus("Calender", "DELETE", "401")
+		util.Respond(Writer, http.StatusUnauthorized, []byte("Invalid token"))
 		return
 	}
 
 	removeRequest, ParseErr := parseCalenderRequest(Request)
 	if ParseErr != nil {
 		fmt.Fprintf(os.Stderr, ParseErr.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte("Error Parsing Data"))
+		util.RequestStatus("Calender", "DELETE", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Error Parsing Data"))
 		return
 	}
 
 	err := calender.RemoveEvent(removeRequest)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
-		Writer.WriteHeader(http.StatusInternalServerError)
-		Writer.Write([]byte("Something went wrong"))
+		util.RequestStatus("Calender", "DELETE", "500")
+		util.Respond(Writer, http.StatusInternalServerError, []byte("Failure to Remove Event"))
 		return
 	}
-	Writer.WriteHeader(http.StatusAccepted)
+
+	util.RequestStatus("Calender", "DELETE", "202")
+	util.Respond(Writer, http.StatusAccepted, nil)
 	return
 }
 

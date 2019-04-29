@@ -61,12 +61,13 @@ func getAllActiveAlarms(Writer http.ResponseWriter, Request *http.Request) {
 		return
 	}
 	cursor, err := CalenderCollection.Find(ctx,
-		bson.M{"eventowner": UserID[0], "wentoff": true})
+		bson.M{"owner": UserID[0], "wentoff": true})
 
 	NewAlerts := make([]calender.EventInfo, 0)
 	Event := calender.EventInfo{}
 	for cursor.Next(ctx) {
 		cursor.Decode(&Event)
+		fmt.Println(Event)
 		NewAlerts = append(NewAlerts, Event)
 	}
 
@@ -115,7 +116,7 @@ func deletePastAlarm(Writer http.ResponseWriter, Request *http.Request) {
 	}
 
 	for _, Event := range EventsToDelete {
-		CalenderCollection.DeleteOne(ctx, bson.M{"eventid": Event})
+		CalenderCollection.DeleteOne(ctx, bson.M{"id": Event})
 	}
 
 	fmt.Fprintf(os.Stdout, "DELETE\t\\User\t200\n")
