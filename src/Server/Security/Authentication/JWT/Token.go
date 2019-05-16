@@ -14,7 +14,7 @@ type artemisClaims struct {
 	jwt.StandardClaims
 }
 
-var signingKey = "AllYourBase"
+var signingKey = //Your Signing key here
 
 //CreateToken Creates a new JWT token that will allow the user to make requests to the server
 //Paraemters:
