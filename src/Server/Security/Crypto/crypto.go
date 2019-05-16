@@ -10,7 +10,7 @@ import (
 )
 
 //Randomly Generated 32bit key
-var key = []byte("!Tr2PFFJQqs7-y3beej*%CJgwwmX=%Pj")
+var key = []byte(/*Your key here*/)
 
 //Encrypt Will encrypt the inputed string using AES256 encryption
 //Parameters:
